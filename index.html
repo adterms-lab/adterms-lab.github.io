@@ -292,7 +292,7 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.9</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.10</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
 <section id="studyView" class="view"><div class="study-shell">
@@ -612,7 +612,47 @@ function bindEvents(){document.addEventListener('click',async e=>{
  const item=e.target.closest('[data-color-value]');if(item){const host=item.closest('[data-color-select]'),id=host.dataset.colorSelect,select=$(id);select.value=item.dataset.colorValue;renderColorSelect(id);closeColorSelects();host.querySelector('[data-color-trigger]').focus();select.dispatchEvent(new Event('change',{bubbles:true}));return}
  if(!e.target.closest('[data-color-select]'))closeColorSelects();
  const nav=e.target.closest('[data-nav]');if(nav){setView(nav.dataset.nav);return}const close=e.target.closest('[data-close]');if(close){hideModal(close.dataset.close);return}if(e.target.classList.contains('modal')){hideModal(e.target.id);return}const preview=e.target.closest('[data-preview]');if(preview){previewCard(preview.dataset.preview);return}const edit=e.target.closest('[data-edit]');if(edit){editCard(edit.dataset.edit);return}const del=e.target.closest('[data-delete]');if(del){await deleteCard(del.dataset.delete);return}const tag=e.target.closest('[data-tag-toggle]');if(tag){await toggleTag(tag.dataset.card,Number(tag.dataset.tagToggle));return}const related=e.target.closest('[data-go-related]');if(related){if(related.dataset.origin==='preview'||related.dataset.origin.startsWith('recap:')){previewCard(related.dataset.goRelated)}else{$('studyRange').value='all';resetStudy(related.dataset.goRelated);setView('study')}return}const img=e.target.closest('[data-open-image]');if(img){$('zoomedImage').src=img.dataset.openImage;showModal('imageModal');return}if(e.target.closest('.study-extra'))return;const flip=e.target.closest('[data-flip]');if(flip){if(flip.dataset.flip==='study'){studyRevealed=!studyRevealed;renderCardAt('study')}else if(flip.dataset.flip.startsWith('recap:')){const id=flip.dataset.flip.slice(6);if(quizRecapFlipped.has(id))quizRecapFlipped.delete(id);else quizRecapFlipped.add(id);refreshQuizRecapCard(id)}else if(flip.dataset.flip==='preview'){return}return}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeColorSelects();const m=document.querySelector('.modal:not(.hidden)');if(m)hideModal(m.id)}if((e.key==='ArrowDown'||e.key==='ArrowUp')&&e.target.matches('[data-color-trigger]')){e.preventDefault();e.target.click();e.target.closest('[data-color-select]').querySelector('.color-select-option')?.focus();return}if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-flip]')){e.preventDefault();e.target.click()}if(e.target.matches('input,textarea,select,button'))return;if(view==='study'&&!document.querySelector('.modal:not(.hidden)')){if(e.key==='ArrowLeft')studyStep(-1);if(e.key==='ArrowRight')studyStep(1)}});
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){
+  closeColorSelects();
+  const modal=document.querySelector('.modal:not(.hidden)');
+  if(modal)hideModal(modal.id);
+  return;
+ }
+ if((e.key==='ArrowDown'||e.key==='ArrowUp')&&e.target.matches('[data-color-trigger]')){
+  e.preventDefault();
+  e.target.click();
+  e.target.closest('[data-color-select]').querySelector('.color-select-option')?.focus();
+  return;
+ }
+ const studyActive=view==='study'&&!document.querySelector('.modal:not(.hidden)');
+ const modified=e.ctrlKey||e.metaKey||e.altKey||e.shiftKey||e.isComposing;
+ const editing=e.target.closest('input,textarea,select,[contenteditable]:not([contenteditable="false"]),[role="textbox"]');
+ const picker=e.target.closest('[data-color-select]');
+ if(studyActive&&!modified&&!editing&&!picker){
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){
+   e.preventDefault();
+   const nav=$(e.key==='ArrowLeft'?'studyPrev':'studyNext');
+   if(nav&&!nav.disabled)nav.click();
+   return;
+  }
+  if(e.code==='Space'||e.key===' '||e.key==='Spacebar'){
+   const otherControl=e.target.closest('button,a,summary,[role="button"]');
+   const onStudyCard=e.target.closest('[data-flip="study"]');
+   const onNav=e.target.closest('#studyPrev,#studyNext');
+   if(!otherControl||onStudyCard||onNav){
+    e.preventDefault();
+    if(!e.repeat)document.querySelector('#studyCard [data-flip="study"]')?.click();
+    return;
+   }
+  }
+ }
+ // Preserve native keyboard operation of focused buttons and other views.
+ if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-flip]')){
+  e.preventDefault();
+  e.target.click();
+ }
+});
 $('homeButton').addEventListener('click',()=>setView('home'));$('brandHome').addEventListener('click',()=>setView('home'));$('settingsButton').addEventListener('click',()=>{renderTagSettings();renderProfiles();showModal('settingsModal')});$('studyRange').addEventListener('change',()=>resetStudy());$('studyOrderSequential').addEventListener('click',()=>setStudyOrderMode('ordered'));$('studyOrderRandom').addEventListener('click',()=>setStudyOrderMode('random'));$('studySideFront').addEventListener('click',()=>setStudyStartSide('front'));$('studySideBack').addEventListener('click',()=>setStudyStartSide('back'));$('studyPrev').addEventListener('click',()=>studyStep(-1));$('studyNext').addEventListener('click',()=>studyStep(1));$('addCardButton').addEventListener('click',()=>editCard());['manageSearch','manageCategory','manageTag','manageSort'].forEach(id=>$(id).addEventListener(id==='manageSearch'?'input':'change',renderManage));$('editForm').addEventListener('submit',saveEdit);$('fieldImages').addEventListener('change',e=>appendImages(e.target.files));$('imageThumbs').addEventListener('click',e=>{const b=e.target.closest('[data-remove-img]');if(!b)return;editorImages.splice(Number(b.dataset.removeImg),1);renderThumbs()});$('quizRoot').addEventListener('click',e=>{if(e.target.closest('#startQuiz')){startQuiz();return}if(e.target.closest('#quizSkip')){skipQuestion();return}if(e.target.closest('#quizNext')){nextQuestion();return}if(e.target.closest('#repeatQuiz')){quiz={phase:'setup'};quizRecapFlipped.clear();renderQuiz();return}if(e.target.closest('#abortQuiz')){finishQuizEarly();return}const a=e.target.closest('[data-answer]');if(a)answer(a.dataset.answer)});$('saveTagNames').addEventListener('click',saveTagNames);$('profileSelect').addEventListener('change',e=>switchProfile(e.target.value));$('addProfile').addEventListener('click',addProfile);$('renameProfile').addEventListener('click',renameProfile);$('deleteProfile').addEventListener('click',deleteProfile);$('exportButton').addEventListener('click',exportJson);$('importButton').addEventListener('click',()=>$('importFile').click());$('importFile').addEventListener('change',async e=>{const f=e.target.files?.[0];e.target.value='';if(f)await importJson(f)})}
 async function boot(){bindEvents();loadProfiles();loadTagNames();await initStorage();setView('home')}
 boot().catch(e=>{console.error(e);notice('起動できませんでした。ブラウザを更新してください')});
