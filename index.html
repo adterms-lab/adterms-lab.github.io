@@ -96,10 +96,40 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 
 .static-preview .flipzone{cursor:default}
 .static-preview .flipzone:focus{outline:none}
+
+/* Fixed related terms stay visible as the flashcard flips. */
+.study-card .study-related-fixed{
+  flex:none;
+  background:#eff3fd;
+  border-top:1px solid #d9e2f4;
+  padding:11px 20px 16px;
+}
+.study-card .study-related-fixed .detail-label{margin:0 0 8px;color:#4e618e}
+.study-card .study-related-fixed .relation{margin-top:0}
+.study-card .study-related-fixed .relation button,
+.study-card .study-related-fixed .relation span{
+  font-size:12px;
+  padding:7px 10px;
+  background:white;
+}
+.app-build{
+  display:inline-flex;
+  align-items:center;
+  padding:4px 7px;
+  background:#eef1fc;
+  color:#5f6b9b;
+  border:1px solid #dfe5f8;
+  border-radius:8px;
+  font-size:10px;
+  font-weight:750;
+  white-space:nowrap;
+  letter-spacing:0;
+}
+@media(max-width:420px){.app-build{font-size:9px;padding:3px 5px}}
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.3</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
 <section id="studyView" class="view"><div class="study-shell"><div class="view-top"><div><h1>学習</h1><p class="subtitle">出題順と開始面を選べます。表は単語名、裏は意味・説明と関連用語を表示します。</p></div></div><div class="panel">
@@ -146,15 +176,18 @@ function relatedTarget(name){
 }
 function cardHTML(c,revealed,origin){
  if(!c)return '<div class="empty">対象の単語がありません。</div>';
+ // The vocabulary management preview always shows the full explanation.
+ if(origin==='preview')revealed=true;
  const isStudy=origin==='study',tags=`<span class="tag-mini">${(c.tags||[]).map(colorDot).join('')}</span>`;
  const relatedText=()=>c.related.map(name=>{const to=relatedTarget(name);return to?`<button data-go-related="${escapeHTML(to.id)}" data-origin="${origin}" type="button">${escapeHTML(name)}</button>`:`<span title="単独カード未登録または参照先が複数あります">${escapeHTML(name)}</span>`}).join('');
- const related=(c.related||[]).length?`<div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div>`:'';
+ const related=(c.related||[]).length&&!isStudy?`<div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div>`:'';
+ const studyRelatedFooter=isStudy&&(c.related||[]).length?`<div class="study-related-fixed" aria-label="関連用語"><div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div></div>`:'';
  let content;
  if(!revealed)content=isStudy?`<h2>${escapeHTML(c.term)}</h2><p class="quiet">カードの余白をタップすると意味・説明が見られます</p>`:`<h2>${escapeHTML(c.term)}</h2><p>クリックして答えをチェック</p>`;
  else content=`${isStudy?'':`<h2>${escapeHTML(c.term)}</h2>`}<div class="detail-label">意味・説明</div><div class="bodytext">${escapeHTML(c.definition)}</div>${c.usageSentence?`<div class="detail-label">実務での例文</div><div class="examplebox">${escapeHTML(c.usageSentence)}</div>`:''}${c.example?`<div class="detail-label">補足</div><div class="bodytext">${escapeHTML(c.example)}</div>`:''}${imgSources(c).length?`<div class="detail-label">画像</div><div class="flash-images">${imgSources(c).map(src=>`<img src="${escapeHTML(src)}" alt="${isStudy?'参考画像':escapeHTML(c.term)+'の参考画像'}" data-open-image="${escapeHTML(src)}">`).join('')}</div>`:''}${related}${origin==='preview'?'':`<p class="quiet" style="margin:18px 0 0">カードの余白を押すと表に戻ります</p>`}`;
- const staticPreview=origin==='preview';return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div></article>`;
+ const staticPreview=origin==='preview';return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div>${studyRelatedFooter}</article>`;
 }
-function renderCardAt(origin){const id=origin==='study'?studyOrder[studyIndex]:previewId,c=cardById(id),el=$(origin==='study'?'studyCard':'previewCard'),tagEl=$(origin==='study'?'studyStickers':'previewStickers');el.innerHTML=cardHTML(c,origin==='study'?studyRevealed:previewRevealed,origin);tagEl.innerHTML=c?tagBar(id,origin):'';if(origin==='study'){const size=studyOrder.length;$('studyProgress').textContent=size?`${studyIndex+1} / ${size}`:'0 / 0';$('studyCategoryLabel').textContent=c?.category||'';$('studyPrev').disabled=!size||studyIndex<=0;$('studyNext').disabled=!size||studyIndex>=size-1}}
+function renderCardAt(origin){const id=origin==='study'?studyOrder[studyIndex]:previewId,c=cardById(id),el=$(origin==='study'?'studyCard':'previewCard'),tagEl=$(origin==='study'?'studyStickers':'previewStickers');el.innerHTML=cardHTML(c,origin==='study'?studyRevealed:true,origin);tagEl.innerHTML=c?tagBar(id,origin):'';if(origin==='study'){const size=studyOrder.length;$('studyProgress').textContent=size?`${studyIndex+1} / ${size}`:'0 / 0';$('studyCategoryLabel').textContent=c?.category||'';$('studyPrev').disabled=!size||studyIndex<=0;$('studyNext').disabled=!size||studyIndex>=size-1}}
 function setView(next){if(!['home','study','quiz','manage'].includes(next))return;if(next==='home'&&view==='study'){$('studyRange').value='all';studyRange='all';studyOrderMode='ordered';studyStartSide='front';studyOrder=[];studyIndex=0;studyRevealed=false;studyRelatedVisible=false;updateStudyModeButtons()}if(next==='home'&&quiz.phase==='done'){quiz={phase:'setup'};quizRecapFlipped.clear()};closeColorSelects();view=next;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===next+'View'));$('homeButton').classList.toggle('hidden',next==='home');if(next==='study')renderStudy();if(next==='quiz')renderQuiz();if(next==='manage')renderManage();window.scrollTo({top:0,behavior:'instant'})}
 function showModal(id){$(id).classList.remove('hidden');document.body.style.overflow='hidden'}
 function hideModal(id){$(id).classList.add('hidden');if(!document.querySelector('.modal:not(.hidden)'))document.body.style.overflow=''}
