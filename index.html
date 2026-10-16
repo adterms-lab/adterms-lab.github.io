@@ -112,19 +112,126 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 }
 @media(max-width:420px){.app-build{font-size:9px;padding:3px 5px}}
 .study-card .study-term-mask{display:inline-block;vertical-align:baseline;margin:0 1px;padding:1px 6px;border-radius:5px;background:#3b4d76;color:#fff;font-weight:800;letter-spacing:2px;white-space:nowrap;user-select:none}
+
+/* Study workspace v26.10.16.6: navigation at the sides, stickers inside, compact viewport. */
+#studyView .view-top{margin-bottom:9px;align-items:center}
+#studyView .view-top h1{font-size:24px;line-height:1.2}
+#studyView .subtitle{font-size:12px;line-height:1.3;margin:3px 0 0}
+#studyView .toolbar{padding:8px 12px;gap:6px}
+#studyView .toolbar .color-select{width:100%;min-width:0}
+#studyView .toolbar .color-select-trigger{min-height:39px;padding:7px 11px}
+#studyView .study-flip-help{margin:7px 0 0;font-size:11px;line-height:1.2}
+#studyView .flash-wrap{padding:8px 12px 12px}
+#studyView .progress-line{margin-bottom:7px;line-height:1.2;font-size:12px}
+#studyView .study-card-stage{display:grid;grid-template-columns:54px minmax(0,1fr) 54px;align-items:center;gap:8px;min-width:0}
+#studyView .study-card-slot{min-width:0}
+#studyView .study-card-stage .flashcard{height:clamp(270px,calc(100dvh - 315px),500px);min-height:0}
+#studyView .study-card-stage .flashcard .sticky-top{padding:9px 13px 5px;min-height:0;flex-wrap:wrap;align-items:center;gap:7px}
+#studyView .study-card-stage .flashcard .category-pill{max-width:58%}
+#studyView .study-card-stage .flashcard .flipzone{min-height:0;padding:14px 15px;overflow-wrap:anywhere}
+#studyView .study-card-stage .flashcard.revealed .flipzone{flex:1;min-height:0;max-height:none;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin;padding:5px 16px 15px}
+#studyView .study-card-stage .flashcard.revealed .flipzone .detail-label{margin-top:10px}
+#studyView .study-card-stage .flashcard.revealed .flipzone .examplebox{padding:10px 12px}
+#studyView .study-card-stage .flashcard.revealed .flipzone .bodytext{line-height:1.65}
+#studyView .study-card-stage .flashcard.revealed .flipzone p.quiet{margin-top:12px!important}
+#studyView .study-nav-arrow{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;min-height:110px;border:1px solid #dbe3f1;background:#f3f6fd;color:#344c87;border-radius:13px;cursor:pointer;font-family:inherit;font-weight:800}
+#studyView .study-nav-arrow:hover:not(:disabled){background:#eaf0ff;border-color:#92a6d8}
+#studyView .study-nav-arrow:focus-visible{outline:3px solid #7d94dd;outline-offset:2px}
+#studyView .study-nav-arrow:disabled{opacity:.35;cursor:not-allowed}
+#studyView .study-nav-symbol{font-size:28px;line-height:1}
+#studyView .study-nav-caption{font-size:12px;white-space:nowrap}
+#studyView .study-stickers{display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-left:auto;max-width:100%}
+#studyView .study-stickers-label{font-size:11px;color:#6f7b8c;font-weight:800;margin-right:2px;white-space:nowrap}
+#studyView .study-tag-button{display:inline-flex;position:relative;align-items:center;justify-content:center;flex:none;width:33px;height:33px;border:1px solid #dfe5ef;border-radius:9px;background:#fff;cursor:pointer;padding:0}
+#studyView .study-tag-button:hover{background:#f4f6fc;border-color:#9daacc}
+#studyView .study-tag-button:focus-visible{outline:3px solid #8192e9;outline-offset:2px}
+#studyView .study-tag-button.selected{background:#eaf0ff;border:2px solid #5269bc;box-shadow:0 0 0 1px #5269bc15}
+#studyView .study-tag-dot{width:13px;height:13px;border-radius:4px}
+#studyView .study-tag-check{position:absolute;right:0;top:-4px;color:#253e93;font-weight:900;font-size:13px;text-shadow:0 1px 0 white}
+#studyView .study-mode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0 0}
+#studyView .study-mode-panel{min-width:0;padding:8px 9px;border-radius:11px}
+#studyView .study-mode-heading{font-size:11px;margin-bottom:6px}
+#studyView .study-mode-choices{gap:5px}
+#studyView .study-mode-button{min-height:44px;font-size:12px;padding:6px 4px;gap:1px;border-width:1.5px;border-radius:9px}
+#studyView .study-mode-button small{font-size:10px}
+@media(max-width:680px){
+ main:has(#studyView.active){padding-top:10px;padding-bottom:18px;min-height:0}
+ #studyView .view-top{margin-bottom:7px}
+ #studyView .view-top h1{font-size:21px}
+ #studyView .view-top .subtitle{display:none}
+ #studyView .toolbar{padding:6px 9px}
+ #studyView .study-flip-help{margin:5px 0 0}
+ #studyView .flash-wrap{padding:7px 8px 10px}
+ #studyView .study-card-stage{grid-template-columns:39px minmax(0,1fr) 39px;gap:5px}
+ #studyView .study-card-stage .flashcard{height:clamp(240px,calc(100dvh - 315px),480px)}
+ #studyView .study-card-stage .flashcard .sticky-top{padding:8px 9px 4px;gap:4px}
+ #studyView .study-card-stage .flashcard .category-pill{max-width:44%;font-size:10px;padding:4px 6px}
+ #studyView .study-card-stage .flashcard .flipzone{padding:11px 10px}
+ #studyView .study-card-stage .flashcard.revealed .flipzone{padding:4px 10px 12px}
+ #studyView .study-card-stage .flashcard .flipzone h2{font-size:clamp(19px,6vw,27px)}
+ #studyView .study-nav-arrow{min-height:88px;border-radius:10px}
+ #studyView .study-nav-symbol{font-size:23px}
+ #studyView .study-nav-caption{font-size:10px}
+ #studyView .study-stickers-label{display:none}
+ #studyView .study-tag-button{width:29px;height:31px}
+ #studyView .study-mode-grid{gap:6px;margin-top:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+ #studyView .study-mode-panel{padding:7px 6px}
+ #studyView .study-mode-heading{font-size:11px;margin-bottom:5px}
+ #studyView .study-mode-button{min-height:39px;font-size:11px;padding:4px 2px}
+ #studyView .study-mode-button small{display:none}
+}
+@media(max-width:420px){
+ #studyView .study-card-stage{grid-template-columns:33px minmax(0,1fr) 33px;gap:4px}
+ #studyView .study-nav-symbol{font-size:21px}
+ #studyView .study-nav-caption{font-size:9px}
+ #studyView .study-card-stage .flashcard .category-pill{display:none}
+ #studyView .study-stickers{width:100%;justify-content:flex-end}
+ #studyView .study-tag-button{width:32px;height:32px}
+}
+@media(max-height:640px){
+ #studyView .study-card-stage .flashcard{height:clamp(220px,calc(100dvh - 290px),360px)}
+ #studyView .study-flip-help{display:none}
+ #studyView .study-mode-button{min-height:36px}
+ #studyView .study-mode-grid{margin-top:6px}
+}
+
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.5</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.6</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
-<section id="studyView" class="view"><div class="study-shell"><div class="view-top"><div><h1>学習</h1><p class="subtitle">表は単語名、裏は意味・説明を表示します。進行順と開始面はカードの下で切り替えられます。</p></div></div><div class="panel">
-<div class="toolbar"><div class="color-select" data-color-select="studyRange"><select id="studyRange" class="color-native" aria-hidden="true" tabindex="-1"></select><button type="button" class="color-select-trigger" data-color-trigger="studyRange" aria-label="学習範囲" aria-haspopup="listbox" aria-expanded="false"></button><div class="color-select-options hidden" role="listbox" aria-label="学習範囲の選択肢"></div></div></div>
-<p class="study-flip-help">カードの余白をタップすると表と裏が切り替わります。</p>
-<div class="flash-wrap"><div class="progress-line"><span id="studyProgress">1 / 370</span><span id="studyCategoryLabel"></span></div><div id="studyCard"></div><div id="studyStickers"></div><div class="study-mode-grid">
-<div class="study-mode-panel" role="group" aria-label="単語の進行順"><div class="study-mode-heading">進行順</div><div class="study-mode-choices"><button id="studyOrderSequential" type="button" class="study-mode-button" aria-pressed="false">⇢ 順番<small>登録順に進む</small></button><button id="studyOrderRandom" type="button" class="study-mode-button" aria-pressed="true">⤨ ランダム<small>毎回シャッフル</small></button></div></div>
-<div class="study-mode-panel" role="group" aria-label="カードのデフォルト表示"><div class="study-mode-heading">カードの開始面</div><div class="study-mode-choices"><button id="studySideFront" type="button" class="study-mode-button" aria-pressed="false">▤ 表から<small>単語を確認</small></button><button id="studySideBack" type="button" class="study-mode-button" aria-pressed="true">▣ 裏から<small>意味から考える</small></button></div></div>
-</div><div class="study-controls"><button class="btn" id="studyPrev" type="button">← 前へ</button><button class="btn" id="studyNext" type="button">次へ →</button></div></div></div></div></section>
+<section id="studyView" class="view"><div class="study-shell">
+<div class="view-top"><div><h1>学習</h1><p class="subtitle">カードをタップして表裏を切り替え。左右の矢印で移動できます。</p></div></div>
+<div class="panel">
+ <div class="toolbar"><div class="color-select" data-color-select="studyRange"><select id="studyRange" class="color-native" aria-hidden="true" tabindex="-1"></select><button type="button" class="color-select-trigger" data-color-trigger="studyRange" aria-label="学習範囲" aria-haspopup="listbox" aria-expanded="false"></button><div class="color-select-options hidden" role="listbox" aria-label="学習範囲の選択肢"></div></div></div>
+ <p class="study-flip-help">カードをタップすると表と裏が切り替わります。</p>
+ <div class="flash-wrap">
+  <div class="progress-line"><span id="studyProgress">1 / 370</span><span id="studyCategoryLabel"></span></div>
+  <div class="study-card-stage">
+   <button class="study-nav-arrow" id="studyPrev" type="button" aria-label="前の単語へ"><span class="study-nav-symbol" aria-hidden="true">←</span><span class="study-nav-caption">前へ</span></button>
+   <div class="study-card-slot" id="studyCard"></div>
+   <button class="study-nav-arrow" id="studyNext" type="button" aria-label="次の単語へ"><span class="study-nav-symbol" aria-hidden="true">→</span><span class="study-nav-caption">次へ</span></button>
+  </div>
+  <div class="study-mode-grid">
+   <div class="study-mode-panel" role="group" aria-label="単語の進行順">
+    <div class="study-mode-heading">進行順</div>
+    <div class="study-mode-choices">
+     <button id="studyOrderSequential" type="button" class="study-mode-button" aria-pressed="false">⇢ 順番<small>登録順に進む</small></button>
+     <button id="studyOrderRandom" type="button" class="study-mode-button" aria-pressed="true">⤨ ランダム<small>毎回シャッフル</small></button>
+    </div>
+   </div>
+   <div class="study-mode-panel" role="group" aria-label="カードのデフォルト表示">
+    <div class="study-mode-heading">カードの開始面</div>
+    <div class="study-mode-choices">
+     <button id="studySideFront" type="button" class="study-mode-button" aria-pressed="false">▤ 表から<small>単語を確認</small></button>
+     <button id="studySideBack" type="button" class="study-mode-button" aria-pressed="true">▣ 裏から<small>意味から考える</small></button>
+    </div>
+   </div>
+  </div>
+ </div>
+</div>
+</div></section>
 <section id="quizView" class="view"><div class="view-limit"><div class="view-top"><div><h1>クイズ</h1><p class="subtitle">出題範囲を決めて、1問ずつ解きます。スキップもできます。</p></div></div><div class="panel"><div id="quizRoot" class="quiz-body"></div></div></div></section>
 <section id="manageView" class="view"><div class="view-top"><div><h1>単語管理</h1><p class="subtitle">単語名を押すとカードが開きます。</p></div><button id="addCardButton" class="btn primary" type="button">＋ 追加</button></div><div class="panel"><div class="toolbar"><input id="manageSearch" class="input" placeholder="単語・説明・例文を検索" aria-label="単語を検索"><select id="manageCategory" aria-label="カテゴリで絞り込み"></select><div class="color-select" data-color-select="manageTag"><select id="manageTag" class="color-native" aria-hidden="true" tabindex="-1"></select><button type="button" class="color-select-trigger" data-color-trigger="manageTag" aria-label="付箋で絞り込み" aria-haspopup="listbox" aria-expanded="false"></button><div class="color-select-options hidden" id="manageTag-menu" role="listbox" aria-label="付箋で絞り込み"></div></div><select id="manageSort" aria-label="並べ替え"><option value="added-asc">追加順（古い順）</option><option value="added-desc">追加順（新しい順）</option><option value="category-asc">カテゴリ順（昇順）</option><option value="category-desc">カテゴリ順（降順）</option><option value="term-asc">単語名順</option></select></div><div class="list-meta"><span id="manageCount"></span><span>単語をクリックで表示</span></div><div id="manageList" class="list"></div></div></section>
 </main>
@@ -149,7 +256,13 @@ const categories=()=>[...new Set(cards.map(c=>c.category).filter(Boolean))].sort
 function notice(msg){const e=$('notice');e.textContent=msg;e.classList.remove('hidden');clearTimeout(flashTimer);flashTimer=setTimeout(()=>e.classList.add('hidden'),3200)}
 function colorDot(i){return `<i style="background:${COLORS[i]}"></i>`}
 function tagSummary(c){return `<span class="entry-markers">${(c.tags||[]).map(colorDot).join('')}</span>`}
-function tagBar(id,origin){const c=cardById(id);if(!c)return '';return `<div class="sticky-bar"><span class="sticky-hint">付箋</span>${COLORS.map((color,i)=>`<button class="tagbtn ${(c.tags||[]).includes(i)?'selected':''}" aria-pressed="${(c.tags||[]).includes(i)}" data-tag-toggle="${i}" data-card="${escapeHTML(id)}" type="button"><span class="dot" style="background:${color}"></span><span>${escapeHTML(tagNames[i])}</span></button>`).join('')}</div>`}
+function tagBar(id,origin){
+ const c=cardById(id);if(!c)return '';
+ if(origin==='study'){
+  return `<div class="study-stickers" role="group" aria-label="付箋をつける"><span class="study-stickers-label">付箋</span>${COLORS.map((color,i)=>{const selected=(c.tags||[]).includes(i),label=String(tagNames[i]||DEFAULT_NAMES[i]);return `<button class="study-tag-button ${selected?'selected':''}" type="button" data-tag-toggle="${i}" data-card="${escapeHTML(id)}" aria-pressed="${selected}" aria-label="${escapeHTML(label)}の付箋を${selected?'外す':'つける'}" title="${escapeHTML(label)}：${selected?'付箋を外す':'付箋をつける'}"><span class="study-tag-dot" style="background:${color}"></span>${selected?'<span class="study-tag-check" aria-hidden="true">✓</span>':''}</button>`}).join('')}</div>`;
+ }
+ return `<div class="sticky-bar"><span class="sticky-hint">付箋</span>${COLORS.map((color,i)=>`<button class="tagbtn ${(c.tags||[]).includes(i)?'selected':''}" aria-pressed="${(c.tags||[]).includes(i)}" data-tag-toggle="${i}" data-card="${escapeHTML(id)}" type="button"><span class="dot" style="background:${color}"></span><span>${escapeHTML(tagNames[i])}</span></button>`).join('')}</div>`;
+}
 function imgSources(c){return (c.images||[]).filter(x=>typeof x==='string'&&SAFE_IMAGE.test(x)).slice(0,3)}
 function similarTerm(a,b){const norm=s=>String(s).toLocaleLowerCase('ja').replace(/[（(][^）)]*[）)]/g,'').replace(/[\s　]/g,'').trim();return norm(a.term)===norm(b.term)||GROUPS.some(g=>g.includes(a.term)&&g.includes(b.term))}
 function relatedTarget(name){
@@ -181,7 +294,7 @@ function cardHTML(c,revealed,origin){
  if(!c)return '<div class="empty">対象の単語がありません。</div>';
  // The vocabulary management preview always shows the full explanation.
  if(origin==='preview')revealed=true;
- const isStudy=origin==='study',tags=`<span class="tag-mini">${(c.tags||[]).map(colorDot).join('')}</span>`;
+ const isStudy=origin==='study',tags=isStudy?tagBar(c.id,'study'):`<span class="tag-mini">${(c.tags||[]).map(colorDot).join('')}</span>`;
  const relatedText=()=>c.related.map(name=>{const to=relatedTarget(name);return to?`<button data-go-related="${escapeHTML(to.id)}" data-origin="${origin}" type="button">${escapeHTML(name)}</button>`:`<span title="単独カード未登録または参照先が複数あります">${escapeHTML(name)}</span>`}).join('');
  const related=(c.related||[]).length&&!isStudy?`<div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div>`:'';
  let content;
@@ -189,7 +302,18 @@ function cardHTML(c,revealed,origin){
  else content=`${isStudy?'':`<h2>${escapeHTML(c.term)}</h2>`}<div class="detail-label">意味・説明</div><div class="bodytext">${escapeHTML(c.definition)}</div>${c.usageSentence?`<div class="detail-label">実務での例文</div><div class="examplebox">${isStudy?studyMaskedUsageSentence(c):escapeHTML(c.usageSentence)}</div>`:''}${c.example?`<div class="detail-label">補足</div><div class="bodytext">${escapeHTML(c.example)}</div>`:''}${imgSources(c).length?`<div class="detail-label">画像</div><div class="flash-images">${imgSources(c).map(src=>`<img src="${escapeHTML(src)}" alt="${isStudy?'参考画像':escapeHTML(c.term)+'の参考画像'}" data-open-image="${escapeHTML(src)}">`).join('')}</div>`:''}${related}${origin==='preview'?'':`<p class="quiet" style="margin:18px 0 0">カードの余白を押すと表に戻ります</p>`}`;
  const staticPreview=origin==='preview';return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div></article>`;
 }
-function renderCardAt(origin){const id=origin==='study'?studyOrder[studyIndex]:previewId,c=cardById(id),el=$(origin==='study'?'studyCard':'previewCard'),tagEl=$(origin==='study'?'studyStickers':'previewStickers');el.innerHTML=cardHTML(c,origin==='study'?studyRevealed:true,origin);tagEl.innerHTML=c?tagBar(id,origin):'';if(origin==='study'){const size=studyOrder.length;$('studyProgress').textContent=size?`${studyIndex+1} / ${size}`:'0 / 0';$('studyCategoryLabel').textContent=c?.category||'';$('studyPrev').disabled=!size||studyIndex<=0;$('studyNext').disabled=!size||studyIndex>=size-1}}
+function renderCardAt(origin){
+ const isStudy=origin==='study',id=isStudy?studyOrder[studyIndex]:previewId,c=cardById(id),el=$(isStudy?'studyCard':'previewCard');
+ el.innerHTML=cardHTML(c,isStudy?studyRevealed:true,origin);
+ if(!isStudy)$('previewStickers').innerHTML=c?tagBar(id,origin):'';
+ if(isStudy){
+  const size=studyOrder.length;
+  $('studyProgress').textContent=size?`${studyIndex+1} / ${size}`:'0 / 0';
+  $('studyCategoryLabel').textContent=c?.category||'';
+  $('studyPrev').disabled=!size||studyIndex<=0;
+  $('studyNext').disabled=!size||studyIndex>=size-1;
+ }
+}
 function setView(next){if(!['home','study','quiz','manage'].includes(next))return;if(next==='home'&&view==='study'){$('studyRange').value='all';studyRange='all';studyOrderMode='random';studyStartSide='back';studyOrder=[];studyIndex=0;studyRevealed=false;studyRelatedVisible=false;updateStudyModeButtons()}if(next==='home'&&quiz.phase==='done'){quiz={phase:'setup'};quizRecapFlipped.clear()};closeColorSelects();view=next;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===next+'View'));$('homeButton').classList.toggle('hidden',next==='home');if(next==='study')renderStudy();if(next==='quiz')renderQuiz();if(next==='manage')renderManage();window.scrollTo({top:0,behavior:'instant'})}
 function showModal(id){$(id).classList.remove('hidden');document.body.style.overflow='hidden'}
 function hideModal(id){$(id).classList.add('hidden');if(!document.querySelector('.modal:not(.hidden)'))document.body.style.overflow=''}
