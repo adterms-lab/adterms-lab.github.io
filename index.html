@@ -287,10 +287,26 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
  #studyView .study-card-slot .flashcard.revealed .flipzone{padding-bottom:49px}
 }
 
+
+/* Subtle study-only cloze marker: keep question marks, soften the background. */
+#studyView .study-card .study-term-mask{
+ display:inline-block;
+ vertical-align:baseline;
+ padding:1px 7px;
+ margin:0 1px;
+ border-radius:5px;
+ background:#e1e9f4;
+ color:#344b69;
+ border:1px solid #d5dfed;
+ font-weight:750;
+ letter-spacing:.025em;
+ white-space:nowrap;
+}
+
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.11</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.12</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
 <section id="studyView" class="view"><div class="study-shell">
@@ -380,7 +396,7 @@ function studyMaskedUsageSentence(c){
  const aliases=[term,term.replace(/[（(].*$/,'').trim(),...Array.from(term.matchAll(/[（(]([^）)]+)[）)]/g),m=>m[1])];
  const names=[...new Set(aliases.filter(Boolean))].sort((a,b)=>b.length-a.length);
  if(!names.length)return escapeHTML(sentence);
- const safePattern=names.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\function cardHTML(c,revealed,origin){')).join('|');
+ const safePattern=names.map(x=>x.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');
  const regex=new RegExp(safePattern,'gi');
  let result='',index=0;
  for(const match of sentence.matchAll(regex)){
