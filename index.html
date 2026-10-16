@@ -215,10 +215,43 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
  #studyView .study-mode-grid{margin-top:6px}
 }
 
+
+/* Quiz answer feedback: compact choices with an obvious right-side judgement. */
+#quizView .quiz-playing .choice{align-items:center;min-width:0}
+#quizView .quiz-playing .choice-text{flex:1;min-width:0;white-space:pre-wrap;overflow-wrap:anywhere}
+#quizView .quiz-playing .choice-mark{
+ flex:none;margin-left:auto;display:grid;place-items:center;
+ width:35px;height:35px;border-radius:50%;font-size:29px;font-weight:850;line-height:1;
+}
+#quizView .quiz-playing .choice.good .choice-mark{color:#178358}
+#quizView .quiz-playing .choice.bad .choice-mark{color:#bf3f52}
+#quizView .quiz-playing .choice.good .choice-text{color:#216849}
+#quizView .quiz-playing .choice.bad .choice-text{color:#a53c4e}
+#quizView .quiz-playing .quiz-action-bar{display:flex;justify-content:flex-end;margin-top:16px}
+#quizView .quiz-playing .quiz-action-bar .btn{min-width:148px;min-height:48px}
+@media(max-width:680px){
+ #quizView .quiz-body{padding:14px 13px}
+ #quizView .quiz-playing{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+ #quizView .quiz-playing .quiz-question{min-height:0;margin:8px 0 12px;padding:16px 15px;border-radius:12px}
+ #quizView .quiz-playing .quiz-question h2{font-size:16px;line-height:1.65}
+ #quizView .quiz-playing .quiz-question .hint{margin-bottom:6px}
+ #quizView .quiz-playing .quiz-options{gap:9px}
+ #quizView .quiz-playing .choice{min-height:59px;padding:11px 12px;gap:10px;border-radius:11px}
+ #quizView .quiz-playing .choice-mark{width:33px;height:33px;font-size:28px}
+ #quizView .quiz-playing .quiz-action-bar{
+   position:fixed;z-index:40;bottom:0;left:0;right:0;margin:0;
+   display:flex;justify-content:center;
+   padding:10px max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+   background:rgba(255,255,255,.98);border-top:1px solid #e3e8ef;
+   box-shadow:0 -6px 22px rgba(39,56,84,.08);
+ }
+ #quizView .quiz-playing .quiz-action-bar .btn{width:100%;max-width:580px;min-height:50px;font-size:15px}
+}
+
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.7</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.8</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
 <section id="studyView" class="view"><div class="study-shell">
@@ -448,9 +481,30 @@ function refreshQuizRecapCard(id){
 }
 function renderQuiz(){const root=$('quizRoot');if(quiz.phase==='setup'){const opts=tagOptions(true);root.innerHTML=`<div class="quiz-setup"><div class="field"><label for="quizRange">出題範囲</label><div class="color-select" data-color-select="quizRange"><select id="quizRange" class="color-native" tabindex="-1" aria-hidden="true">${opts}</select><button type="button" class="color-select-trigger" data-color-trigger="quizRange" aria-label="クイズ出題範囲" aria-haspopup="listbox" aria-expanded="false"></button><div class="color-select-options hidden" id="quizRange-menu" role="listbox" aria-label="クイズ出題範囲"></div></div></div><div class="fields"><div class="field"><label for="quizCount">問題数</label><select id="quizCount">${Array.from({length:Math.floor(cards.length/10)},(_,i)=>`<option value="${(i+1)*10}">${(i+1)*10}問</option>`).join('')}<option value="all">全件（${cards.length}語）</option></select></div><div class="field"><label for="quizDirection">問題形式</label><select id="quizDirection"><option value="definition">説明から用語を選ぶ</option><option value="term">用語から説明を選ぶ</option><option value="mixed">両方を混ぜる</option></select></div></div><p class="quiet">スキップした問題は再出題しません。正誤履歴も保存しません。</p><button class="btn primary" id="startQuiz" style="width:100%;margin-top:16px">クイズを始める</button></div>`;renderColorSelect('quizRange');return}
 if(quiz.phase==='done'){const shown=quiz.shownIds||quiz.ids.slice(0,quiz.index+1),sc=quizScore();root.innerHTML=`<div class="quiz-end-title"><h2>クイズ終了</h2><p>${shown.length}問の出題が終了しました。</p></div><div class="quiz-score-grid" aria-label="今回のクイズ結果"><div class="quiz-score-cell score-correct"><span class="score-count">${sc.correct}</span><span class="score-name">✓ 正解</span></div><div class="quiz-score-cell score-incorrect"><span class="score-count">${sc.incorrect}</span><span class="score-name">× 不正解</span></div><div class="quiz-score-cell score-skipped"><span class="score-count">${sc.skipped}</span><span class="score-name">– スキップ</span></div>${sc.unanswered?`<div class="quiz-score-cell score-unanswered"><span class="score-count">${sc.unanswered}</span><span class="score-name">? 未回答</span></div>`:''}</div><p class="quiz-end-warning">※回答履歴は保存されません！\nホームに戻る前に結果を確認してください。</p><div class="quiz-end-actions"><button class="btn primary" id="repeatQuiz" type="button">もう一度</button><button class="btn" data-nav="home" type="button">ホームへ</button></div><section class="quiz-recap"><h3>今回出題された単語カード（${shown.length}語）</h3><p>出題順に表示しています。カードを押して表裏を切り替え、下の付箋をその場で変更できます。</p><div class="quiz-recap-list">${shown.map((id,i)=>quizRecapCard(id,i)).join('')}</div></section>`;return}
-const id=quiz.ids[quiz.index],c=cardById(id);if(!c){nextQuestion();return}const direction=quiz.currentDirection,question=direction==='definition'?c.definition:c.term+(cards.filter(x=>x.term===c.term).length>1?`（${c.category}）`:''),labels=quiz.options.map(x=>direction==='definition'?x.term:x.definition);root.innerHTML=`<div class="progress-line"><span>${quiz.index+1} / ${quiz.ids.length} 問</span><button type="button" id="abortQuiz" class="plainlink">終了</button></div><div class="quiz-question"><div class="hint">${direction==='definition'?'この説明に当てはまる用語は？':'この用語の意味は？'}</div><h2>${escapeHTML(question)}</h2></div><div class="quiz-options">${labels.map((text,i)=>`<button class="choice ${quiz.answered?(quiz.options[i].id===c.id?'good':quiz.selected===quiz.options[i].id?'bad':''):''}" type="button" data-answer="${escapeHTML(quiz.options[i].id)}" ${quiz.answered?'disabled':''}><span class="letter">${['A','B','C','D'][i]}</span><span>${escapeHTML(text)}</span></button>`).join('')}</div>${quiz.answered?`<div class="quiz-result"><strong>${quiz.selected===c.id?'正解':'答えを確認しましょう'}</strong><p><b>${escapeHTML(c.term)}</b>：${escapeHTML(c.definition)}</p>${c.usageSentence?`<p>例文：${escapeHTML(c.usageSentence)}</p>`:''}${imgSources(c).length?`<div class="flash-images">${imgSources(c).map(src=>`<img src="${escapeHTML(src)}" alt="参考画像" data-open-image="${escapeHTML(src)}">`).join('')}</div>`:''}</div><div style="display:flex;justify-content:flex-end;margin-top:17px"><button type="button" class="btn primary" id="quizNext">${quiz.index===quiz.ids.length-1?'終了する':'次へ →'}</button></div>`:`<div style="display:flex;justify-content:flex-end;margin-top:17px"><button type="button" class="btn" id="quizSkip">スキップ →</button></div>`}`}
+
+const id=quiz.ids[quiz.index],c=cardById(id);
+if(!c){nextQuestion();return}
+const direction=quiz.currentDirection;
+const question=direction==='definition'?c.definition:c.term+(cards.filter(x=>x.term===c.term).length>1?`（${c.category}）`:'');
+const labels=quiz.options.map(x=>direction==='definition'?x.term:x.definition);
+root.innerHTML=`<div class="quiz-playing">
+ <div class="progress-line"><span>${quiz.index+1} / ${quiz.ids.length} 問</span><button type="button" id="abortQuiz" class="plainlink">終了</button></div>
+ <div class="quiz-question"><div class="hint">${direction==='definition'?'この説明に当てはまる用語は？':'この用語の意味は？'}</div><h2>${escapeHTML(question)}</h2></div>
+ <div class="quiz-options" role="group" aria-label="回答の選択肢">
+  ${labels.map((text,i)=>{
+   const option=quiz.options[i],correct=quiz.answered&&option.id===c.id,incorrect=quiz.answered&&quiz.selected===option.id&&option.id!==c.id;
+   const state=correct?'good':incorrect?'bad':'';
+   const judgement=correct?'○':incorrect?'×':'';
+   const ariaPrefix=correct?'正解：':incorrect?'不正解：':'';
+   return `<button class="choice ${state}" type="button" data-answer="${escapeHTML(option.id)}" aria-label="${ariaPrefix}${escapeHTML(text)}" ${quiz.answered?'disabled':''}><span class="letter" aria-hidden="true">${['A','B','C','D'][i]}</span><span class="choice-text">${escapeHTML(text)}</span>${judgement?`<span class="choice-mark" aria-hidden="true">${judgement}</span>`:''}</button>`;
+  }).join('')}
+ </div>
+ <div class="quiz-action-bar"><button type="button" class="btn ${quiz.answered?'primary':''}" id="${quiz.answered?'quizNext':'quizSkip'}">${quiz.answered?(quiz.index===quiz.ids.length-1?'結果を見る':'次へ →'):'スキップ →'}</button></div>
+</div>`;
+}
+
 function chosenDistractors(c,dir){let pool=shuffled(cards).filter(x=>!similarTerm(c,x));if(dir==='definition'){const seen=new Set([c.term.toLocaleLowerCase('ja')]);pool=pool.filter(x=>{const k=x.term.toLocaleLowerCase('ja');if(seen.has(k))return false;seen.add(k);return true})}else{const seen=new Set([c.definition.trim()]);pool=pool.filter(x=>{const k=x.definition.trim();if(seen.has(k))return false;seen.add(k);return true})}return pool.slice(0,3)}
-function prepareQuestion(){const c=cardById(quiz.ids[quiz.index]);if(!c){quiz.phase='done';renderQuiz();return}if(!Array.isArray(quiz.shownIds))quiz.shownIds=[];if(!quiz.shownIds.includes(c.id))quiz.shownIds.push(c.id);quiz.currentDirection=quiz.direction==='mixed'?(Math.random()<.5?'definition':'term'):quiz.direction;let opts=chosenDistractors(c,quiz.currentDirection);if(opts.length<3){notice('選択肢が不足しています');quiz.phase='done';renderQuiz();return}quiz.options=shuffled([c,...opts]);quiz.selected=null;quiz.answered=false;renderQuiz()}
+function prepareQuestion(){const c=cardById(quiz.ids[quiz.index]);if(!c){quiz.phase='done';renderQuiz();return}if(!Array.isArray(quiz.shownIds))quiz.shownIds=[];if(!quiz.shownIds.includes(c.id))quiz.shownIds.push(c.id);quiz.currentDirection=quiz.direction==='mixed'?(Math.random()<.5?'definition':'term'):quiz.direction;let opts=chosenDistractors(c,quiz.currentDirection);if(opts.length<3){notice('選択肢が不足しています');quiz.phase='done';renderQuiz();return}quiz.options=shuffled([c,...opts]);quiz.selected=null;quiz.answered=false;renderQuiz();if(view==='quiz')window.scrollTo({top:0,behavior:'instant'})}
 function startQuiz(){quizRecapFlipped.clear();const range=$('quizRange').value,how=$('quizDirection').value,n=$('quizCount').value;const pool=shuffled(cards.filter(c=>eligible(c,range)));if(!pool.length){notice('対象の単語がありません');return}let length=n==='all'?pool.length:Math.min(Number(n),pool.length);if(cards.length<4){notice('クイズには単語が4件以上必要です');return}quiz={phase:'playing',ids:pool.slice(0,length).map(c=>c.id),shownIds:[],outcomes:Object.create(null),index:0,direction:how,range};prepareQuestion()}
 function nextQuestion(){if(quiz.phase!=='playing')return;quiz.index++;if(quiz.index>=quiz.ids.length){quiz.phase='done';renderQuiz();return}prepareQuestion()}
 function answer(id){if(quiz.phase!=='playing'||quiz.answered||!quiz.options.some(c=>c.id===id))return;quiz.selected=id;quiz.answered=true;const target=quiz.ids[quiz.index];quiz.outcomes[target]={status:id===target?'correct':'incorrect',selected:id,direction:quiz.currentDirection};renderQuiz()}
