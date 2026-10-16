@@ -54,7 +54,7 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 
 
 /* Prominent study order and front/back mode controls */
-.study-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 21px 0}
+.study-mode-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 0}
 .study-mode-panel{background:#f7f9fd;border:1px solid #e0e6f2;border-radius:15px;padding:13px}
 .study-mode-heading{font-size:13px;font-weight:800;color:#394761;margin-bottom:10px}
 .study-mode-choices{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -76,7 +76,7 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 .study-related-reveal{min-height:60px;align-items:flex-start;text-align:left}
 .study-related-reveal .study-reveal-text{font-size:14px}
 .study-card .relation{margin-top:10px}
-@media(max-width:680px){.study-mode-grid{grid-template-columns:1fr;margin:12px 13px 0;gap:9px}.study-mode-button{min-height:61px}.study-mode-panel{padding:11px}}
+@media(max-width:680px){.study-mode-grid{grid-template-columns:1fr;margin:17px 0 0;gap:9px}.study-mode-button{min-height:61px}.study-mode-panel{padding:11px}}
 
 /* Readable quiz recap status, combining text with generous color-coded card backgrounds. */
 .quiz-recap-item{--result-bg:#f6f8fb;--result-card:#fff;--result-stroke:#9aa9bd;--result-title:#344255;--result-pill:#e7edf5;--result-strong:#344255;background:var(--result-bg);border:2px solid var(--result-stroke);border-radius:19px;padding:14px;box-shadow:0 5px 16px rgba(40,50,70,.045)}
@@ -97,21 +97,6 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 .static-preview .flipzone{cursor:default}
 .static-preview .flipzone:focus{outline:none}
 
-/* Fixed related terms stay visible as the flashcard flips. */
-.study-card .study-related-fixed{
-  flex:none;
-  background:#eff3fd;
-  border-top:1px solid #d9e2f4;
-  padding:11px 20px 16px;
-}
-.study-card .study-related-fixed .detail-label{margin:0 0 8px;color:#4e618e}
-.study-card .study-related-fixed .relation{margin-top:0}
-.study-card .study-related-fixed .relation button,
-.study-card .study-related-fixed .relation span{
-  font-size:12px;
-  padding:7px 10px;
-  background:white;
-}
 .app-build{
   display:inline-flex;
   align-items:center;
@@ -130,16 +115,16 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.4</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.5</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
-<section id="studyView" class="view"><div class="study-shell"><div class="view-top"><div><h1>学習</h1><p class="subtitle">出題順と開始面を選べます。表は単語名、裏は意味・説明と関連用語を表示します。</p></div></div><div class="panel">
+<section id="studyView" class="view"><div class="study-shell"><div class="view-top"><div><h1>学習</h1><p class="subtitle">表は単語名、裏は意味・説明を表示します。進行順と開始面はカードの下で切り替えられます。</p></div></div><div class="panel">
 <div class="toolbar"><div class="color-select" data-color-select="studyRange"><select id="studyRange" class="color-native" aria-hidden="true" tabindex="-1"></select><button type="button" class="color-select-trigger" data-color-trigger="studyRange" aria-label="学習範囲" aria-haspopup="listbox" aria-expanded="false"></button><div class="color-select-options hidden" role="listbox" aria-label="学習範囲の選択肢"></div></div></div>
-<div class="study-mode-grid">
+<p class="study-flip-help">カードの余白をタップすると表と裏が切り替わります。</p>
+<div class="flash-wrap"><div class="progress-line"><span id="studyProgress">1 / 370</span><span id="studyCategoryLabel"></span></div><div id="studyCard"></div><div id="studyStickers"></div><div class="study-mode-grid">
 <div class="study-mode-panel" role="group" aria-label="単語の進行順"><div class="study-mode-heading">進行順</div><div class="study-mode-choices"><button id="studyOrderSequential" type="button" class="study-mode-button" aria-pressed="false">⇢ 順番<small>登録順に進む</small></button><button id="studyOrderRandom" type="button" class="study-mode-button" aria-pressed="true">⤨ ランダム<small>毎回シャッフル</small></button></div></div>
 <div class="study-mode-panel" role="group" aria-label="カードのデフォルト表示"><div class="study-mode-heading">カードの開始面</div><div class="study-mode-choices"><button id="studySideFront" type="button" class="study-mode-button" aria-pressed="false">▤ 表から<small>単語を確認</small></button><button id="studySideBack" type="button" class="study-mode-button" aria-pressed="true">▣ 裏から<small>意味から考える</small></button></div></div>
-</div><p class="study-flip-help">カードの余白をタップすると表と裏が切り替わります。</p>
-<div class="flash-wrap"><div class="progress-line"><span id="studyProgress">1 / 370</span><span id="studyCategoryLabel"></span></div><div id="studyCard"></div><div id="studyStickers"></div><div class="study-controls"><button class="btn" id="studyPrev" type="button">← 前へ</button><button class="btn" id="studyNext" type="button">次へ →</button></div></div></div></div></section>
+</div><div class="study-controls"><button class="btn" id="studyPrev" type="button">← 前へ</button><button class="btn" id="studyNext" type="button">次へ →</button></div></div></div></div></section>
 <section id="quizView" class="view"><div class="view-limit"><div class="view-top"><div><h1>クイズ</h1><p class="subtitle">出題範囲を決めて、1問ずつ解きます。スキップもできます。</p></div></div><div class="panel"><div id="quizRoot" class="quiz-body"></div></div></div></section>
 <section id="manageView" class="view"><div class="view-top"><div><h1>単語管理</h1><p class="subtitle">単語名を押すとカードが開きます。</p></div><button id="addCardButton" class="btn primary" type="button">＋ 追加</button></div><div class="panel"><div class="toolbar"><input id="manageSearch" class="input" placeholder="単語・説明・例文を検索" aria-label="単語を検索"><select id="manageCategory" aria-label="カテゴリで絞り込み"></select><div class="color-select" data-color-select="manageTag"><select id="manageTag" class="color-native" aria-hidden="true" tabindex="-1"></select><button type="button" class="color-select-trigger" data-color-trigger="manageTag" aria-label="付箋で絞り込み" aria-haspopup="listbox" aria-expanded="false"></button><div class="color-select-options hidden" id="manageTag-menu" role="listbox" aria-label="付箋で絞り込み"></div></div><select id="manageSort" aria-label="並べ替え"><option value="added-asc">追加順（古い順）</option><option value="added-desc">追加順（新しい順）</option><option value="category-asc">カテゴリ順（昇順）</option><option value="category-desc">カテゴリ順（降順）</option><option value="term-asc">単語名順</option></select></div><div class="list-meta"><span id="manageCount"></span><span>単語をクリックで表示</span></div><div id="manageList" class="list"></div></div></section>
 </main>
@@ -199,11 +184,10 @@ function cardHTML(c,revealed,origin){
  const isStudy=origin==='study',tags=`<span class="tag-mini">${(c.tags||[]).map(colorDot).join('')}</span>`;
  const relatedText=()=>c.related.map(name=>{const to=relatedTarget(name);return to?`<button data-go-related="${escapeHTML(to.id)}" data-origin="${origin}" type="button">${escapeHTML(name)}</button>`:`<span title="単独カード未登録または参照先が複数あります">${escapeHTML(name)}</span>`}).join('');
  const related=(c.related||[]).length&&!isStudy?`<div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div>`:'';
- const studyRelatedFooter=isStudy&&(c.related||[]).length?`<div class="study-related-fixed" aria-label="関連用語"><div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div></div>`:'';
  let content;
  if(!revealed)content=isStudy?`<h2>${escapeHTML(c.term)}</h2><p class="quiet">カードの余白をタップすると意味・説明が見られます</p>`:`<h2>${escapeHTML(c.term)}</h2><p>クリックして答えをチェック</p>`;
  else content=`${isStudy?'':`<h2>${escapeHTML(c.term)}</h2>`}<div class="detail-label">意味・説明</div><div class="bodytext">${escapeHTML(c.definition)}</div>${c.usageSentence?`<div class="detail-label">実務での例文</div><div class="examplebox">${isStudy?studyMaskedUsageSentence(c):escapeHTML(c.usageSentence)}</div>`:''}${c.example?`<div class="detail-label">補足</div><div class="bodytext">${escapeHTML(c.example)}</div>`:''}${imgSources(c).length?`<div class="detail-label">画像</div><div class="flash-images">${imgSources(c).map(src=>`<img src="${escapeHTML(src)}" alt="${isStudy?'参考画像':escapeHTML(c.term)+'の参考画像'}" data-open-image="${escapeHTML(src)}">`).join('')}</div>`:''}${related}${origin==='preview'?'':`<p class="quiet" style="margin:18px 0 0">カードの余白を押すと表に戻ります</p>`}`;
- const staticPreview=origin==='preview';return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div>${studyRelatedFooter}</article>`;
+ const staticPreview=origin==='preview';return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div></article>`;
 }
 function renderCardAt(origin){const id=origin==='study'?studyOrder[studyIndex]:previewId,c=cardById(id),el=$(origin==='study'?'studyCard':'previewCard'),tagEl=$(origin==='study'?'studyStickers':'previewStickers');el.innerHTML=cardHTML(c,origin==='study'?studyRevealed:true,origin);tagEl.innerHTML=c?tagBar(id,origin):'';if(origin==='study'){const size=studyOrder.length;$('studyProgress').textContent=size?`${studyIndex+1} / ${size}`:'0 / 0';$('studyCategoryLabel').textContent=c?.category||'';$('studyPrev').disabled=!size||studyIndex<=0;$('studyNext').disabled=!size||studyIndex>=size-1}}
 function setView(next){if(!['home','study','quiz','manage'].includes(next))return;if(next==='home'&&view==='study'){$('studyRange').value='all';studyRange='all';studyOrderMode='random';studyStartSide='back';studyOrder=[];studyIndex=0;studyRevealed=false;studyRelatedVisible=false;updateStudyModeButtons()}if(next==='home'&&quiz.phase==='done'){quiz={phase:'setup'};quizRecapFlipped.clear()};closeColorSelects();view=next;document.querySelectorAll('.view').forEach(el=>el.classList.toggle('active',el.id===next+'View'));$('homeButton').classList.toggle('hidden',next==='home');if(next==='study')renderStudy();if(next==='quiz')renderQuiz();if(next==='manage')renderManage();window.scrollTo({top:0,behavior:'instant'})}
