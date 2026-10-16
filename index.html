@@ -248,10 +248,51 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
  #quizView .quiz-playing .quiz-action-bar .btn{width:100%;max-width:580px;min-height:50px;font-size:15px}
 }
 
+
+/* Study card alignment v26.10.16.9.
+   Title uses the entire card as its containing block, not a flex row shared with the hint.
+   Both face hints share one bottom anchor outside the scrolling flip area. */
+#studyView .study-card-slot .flashcard:not(.revealed) .study-front-content{display:contents}
+#studyView .study-card-slot .flashcard:not(.revealed) .study-front-content h2{
+ position:absolute;
+ top:50%;
+ left:16px;
+ right:16px;
+ width:auto;
+ margin:0;
+ transform:translateY(-50%);
+ text-align:center;
+ pointer-events:none;
+ overflow-wrap:anywhere;
+}
+#studyView .study-card-slot .flashcard .study-flip-cue{
+ position:absolute;
+ left:12px;
+ right:12px;
+ bottom:15px;
+ margin:0;
+ padding:0;
+ font-size:11px;
+ line-height:1.5;
+ text-align:center;
+ color:#9aa4b3;
+ font-weight:550;
+ z-index:1;
+ pointer-events:none;
+}
+#studyView .study-card-slot .flashcard.revealed .flipzone{
+ padding-bottom:53px;
+}
+@media(max-width:680px){
+ #studyView .study-card-slot .flashcard:not(.revealed) .study-front-content h2{left:10px;right:10px}
+ #studyView .study-card-slot .flashcard .study-flip-cue{bottom:12px}
+ #studyView .study-card-slot .flashcard.revealed .flipzone{padding-bottom:49px}
+}
+
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.8</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.9</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
 <section id="studyView" class="view"><div class="study-shell">
@@ -359,13 +400,13 @@ function cardHTML(c,revealed,origin){
  const related=(c.related||[]).length&&!isStudy?`<div class="detail-label">関連用語</div><div class="relation">${relatedText()}</div>`:'';
  let content;
  if(!revealed){
-  content=isStudy?`<div class="study-front-content"><h2>${escapeHTML(c.term)}</h2><span class="study-flip-cue">タップで意味を見る</span></div>`:`<h2>${escapeHTML(c.term)}</h2><p>クリックして答えをチェック</p>`;
+  content=isStudy?`<div class="study-front-content"><h2>${escapeHTML(c.term)}</h2></div>`:`<h2>${escapeHTML(c.term)}</h2><p>クリックして答えをチェック</p>`;
  }else{
   const details=c.example?(isStudy?`<details class="study-extra"><summary>補足を見る</summary><div class="bodytext">${escapeHTML(c.example)}</div></details>`:`<div class="detail-label">補足</div><div class="bodytext">${escapeHTML(c.example)}</div>`):'';
-  content=`${isStudy?'':`<h2>${escapeHTML(c.term)}</h2>`}<div class="detail-label">${isStudy?'意味':'意味・説明'}</div><div class="bodytext">${escapeHTML(c.definition)}</div>${c.usageSentence?`<div class="detail-label">実務での例文</div><div class="examplebox">${isStudy?studyMaskedUsageSentence(c):escapeHTML(c.usageSentence)}</div>`:''}${details}${imgSources(c).length?`<div class="detail-label">画像</div><div class="flash-images">${imgSources(c).map(src=>`<img src="${escapeHTML(src)}" alt="${isStudy?'参考画像':escapeHTML(c.term)+'の参考画像'}" data-open-image="${escapeHTML(src)}">`).join('')}</div>`:''}${related}${isStudy?'<span class="study-flip-cue">タップで単語を見る</span>':origin==='preview'?'':'<p class="quiet" style="margin:18px 0 0">カードの余白を押すと表に戻ります</p>'}`;
+  content=`${isStudy?'':`<h2>${escapeHTML(c.term)}</h2>`}<div class="detail-label">${isStudy?'意味':'意味・説明'}</div><div class="bodytext">${escapeHTML(c.definition)}</div>${c.usageSentence?`<div class="detail-label">実務での例文</div><div class="examplebox">${isStudy?studyMaskedUsageSentence(c):escapeHTML(c.usageSentence)}</div>`:''}${details}${imgSources(c).length?`<div class="detail-label">画像</div><div class="flash-images">${imgSources(c).map(src=>`<img src="${escapeHTML(src)}" alt="${isStudy?'参考画像':escapeHTML(c.term)+'の参考画像'}" data-open-image="${escapeHTML(src)}">`).join('')}</div>`:''}${related}${origin==='preview'||isStudy?'':'<p class="quiet" style="margin:18px 0 0">カードの余白を押すと表に戻ります</p>'}`;
  }
  const staticPreview=origin==='preview';
- return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div></article>`;
+ return `<article class="flashcard ${revealed?'revealed':''} ${isStudy?'study-card':''} ${staticPreview?'static-preview':''}"><div class="sticky-top"><span class="category-pill">${escapeHTML(c.category)}</span>${tags}</div><div class="flipzone" ${staticPreview?'':`role="button" tabindex="0" data-flip="${origin}" aria-label="${revealed?'表面に戻す':'裏面を表示する'}"`}>${content}</div>${isStudy?`<span class="study-flip-cue" aria-hidden="true">${revealed?'タップで単語を見る':'タップで意味を見る'}</span>`:''}</article>`;
 }
 function renderCardAt(origin){
  const isStudy=origin==='study',id=isStudy?studyOrder[studyIndex]:previewId,c=cardById(id),el=$(isStudy?'studyCard':'previewCard');
