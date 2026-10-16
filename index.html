@@ -111,7 +111,6 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
   letter-spacing:0;
 }
 @media(max-width:420px){.app-build{font-size:9px;padding:3px 5px}}
-.study-card .study-term-mask{display:inline-block;vertical-align:baseline;margin:0 1px;padding:1px 6px;border-radius:5px;background:#3b4d76;color:#fff;font-weight:800;letter-spacing:2px;white-space:nowrap;user-select:none}
 
 
 /* Study redesign v26.10.16.7 — simple, readable, and viewport-conscious. */
@@ -150,7 +149,6 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 #studyView .study-card-slot .flashcard.revealed .flipzone .detail-label:first-child{margin-top:12px}
 #studyView .study-card-slot .flashcard.revealed .flipzone .bodytext{font-size:16px;line-height:1.8;font-weight:550;letter-spacing:.006em;color:var(--study-ink)}
 #studyView .study-card-slot .flashcard.revealed .flipzone .examplebox{border:0;border-left:3px solid #d4deec;border-radius:0 9px 9px 0;background:var(--study-soft);padding:14px 16px;color:#46546a;font-size:14px;line-height:1.85}
-#studyView .study-term-mask{background:#40567b;color:white;letter-spacing:1.5px;padding:1px 5px;border-radius:4px}
 #studyView .study-flip-cue{display:block;text-align:center;font-size:11px;font-weight:550;color:#9aa4b3;margin-top:auto;padding-top:18px}
 #studyView .study-extra{margin-top:14px;border-top:1px solid var(--study-line);padding-top:10px}
 #studyView .study-extra summary{font-size:12px;font-weight:700;color:#687a96;cursor:pointer;list-style:none;display:inline-flex;align-items:center;gap:6px;padding:4px 0}
@@ -292,7 +290,7 @@ select:not(.color-native){appearance:none;-webkit-appearance:none;-moz-appearanc
 </style>
 </head>
 <body>
-<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.10</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
+<header><div class="wrap"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.16.11</span></button><div class="header-actions"><button id="homeButton" class="plainlink hidden" type="button">ホーム</button><button id="settingsButton" class="iconbutton" type="button" title="設定・バックアップ" aria-label="設定・バックアップ">⚙</button></div></div></header>
 <main class="wrap">
 <section id="homeView" class="view active"><div class="home"><p class="eyebrow">WEB ADVERTISING VOCABULARY</p><h1>広告用語を、シンプルに学ぶ。</h1><p class="lead">カードで学んで、クイズで確かめる。</p><div class="home-grid"><button type="button" class="home-tile" data-nav="study"><span class="home-symbol">▤</span><strong>学習</strong><small>カードをめくって覚える　→</small></button><button type="button" class="home-tile" data-nav="quiz"><span class="home-symbol">?</span><strong>クイズ</strong><small>4択で理解を確かめる　→</small></button><button type="button" class="home-tile" data-nav="manage"><span class="home-symbol">☷</span><strong>単語管理</strong><small>検索・編集・付箋　→</small></button></div><div class="home-footer"><span id="homeCount">370語を収録</span> · このブラウザ内に保存</div></div></section>
 <section id="studyView" class="view"><div class="study-shell">
@@ -387,7 +385,7 @@ function studyMaskedUsageSentence(c){
  let result='',index=0;
  for(const match of sentence.matchAll(regex)){
   result+=escapeHTML(sentence.slice(index,match.index));
-  result+='<span class="study-term-mask" aria-label="出題単語の伏せ字">●●●●</span>';
+  result+='<span class="study-term-mask" aria-label="出題単語の伏せ字">？？？</span>';
   index=match.index+match[0].length;
  }
  return result+escapeHTML(sentence.slice(index));
