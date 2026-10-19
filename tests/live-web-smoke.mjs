@@ -5,24 +5,33 @@ import { chromium } from 'playwright';
 
 const base = (process.env.SITE_BASE || 'https://adterms-lab.github.io').replace(/\/$/, '');
 const hash = b => createHash('sha256').update(b).digest('hex');
-const expected = hash(await readFile('business.html'));
+const pages = [
+  { path: 'index.html', expected: hash(await readFile('index.html')) },
+  { path: 'business.html', expected: hash(await readFile('business.html')) },
+];
+const version = 'v26.10.19.6';
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function waitForLiveRelease() {
   for (let attempt = 1; attempt <= 20; attempt++) {
-    const url = base + '/business.html?release-check=' + encodeURIComponent(process.env.GITHUB_SHA || 'manual') + '-' + attempt + '-' + Date.now();
-    try {
-      const r = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
-      if (!r.ok) throw Error('HTTP ' + r.status);
-      const live = hash(Buffer.from(await r.arrayBuffer()));
-      if (live === expected) {
-        console.log('PASS: public GitHub Pages HTML matches current repository file (SHA-256 ' + live + ')');
-        return;
+    let matches = 0;
+    for (const page of pages) {
+      const url = base + '/' + page.path + '?release-check=' + encodeURIComponent(process.env.GITHUB_SHA || 'manual') + '-' + attempt + '-' + Date.now();
+      try {
+        const r = await fetch(url, { headers: { 'Cache-Control': 'no-cache' } });
+        if (!r.ok) throw Error('HTTP ' + r.status);
+        const live = hash(Buffer.from(await r.arrayBuffer()));
+        if (live === page.expected) {
+          console.log('PASS: ' + page.path + ' matches current repository SHA-256 ' + live);
+          matches++;
+        } else {
+          console.log('Live ' + page.path + ' not yet current (attempt ' + attempt + '/20): ' + live + ' vs ' + page.expected);
+        }
+      } catch (e) {
+        console.log('Live site ' + page.path + ' fetch attempt ' + attempt + '/20: ' + String(e));
       }
-      console.log('Live site not current yet (attempt ' + attempt + '/20): ' + live + ' vs ' + expected);
-    } catch (e) {
-      console.log('Live site fetch attempt ' + attempt + '/20: ' + String(e));
     }
+    if (matches === pages.length) return;
     if (attempt < 20) await pause(15000);
   }
   throw Error('Public GitHub Pages file never matched the committed HTML; website deployment or caching is not verified.');
@@ -41,6 +50,7 @@ try {
     assert.equal(r?.status(), 200, 'The browser must load the public page');
     await page.locator('[data-tab="quiz"]').click();
     await page.locator('#quizDirection').waitFor();
+    assert.equal(await page.locator('#brandHome .app-build').textContent(), version, 'Business 100 version badge');
     assert.deepEqual(await page.locator('#quizDirection option').allTextContents(), [
       '説明から用語を選ぶ',
       '用語から説明を選ぶ',
@@ -124,6 +134,7 @@ try {
     await page.locator('#brandHome').click();
     await page.waitForURL(/\/index\.html/);
     assert.ok((await page.title()).includes('AdTerms Lab'), 'Brand navigates to app home');
+    assert.equal(await page.locator('#brandHome .app-build').textContent(), version, 'Main app has same version badge');
     await context.close();
     console.log('PASS: mixed mode balances both directions, finishes all 10, returns home');
   }
