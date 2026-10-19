@@ -7,7 +7,12 @@
 <style>
 :root{--ink:#243249;--muted:#718093;--line:#e5eaf0;--soft:#f5f7fb;--navy:#344a72;--accent:#546cb0;--pale:#eef2fa}
 *{box-sizing:border-box}body{margin:0;background:#fafbfd;color:var(--ink);font-family:Inter,-apple-system,BlinkMacSystemFont,"Hiragino Sans",Meiryo,sans-serif;line-height:1.65}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.35;cursor:default}button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #99add6;outline-offset:2px}a{color:var(--navy);text-decoration:none}a:hover{text-decoration:underline}[hidden]{display:none!important}
-.top{background:#fff;border-bottom:1px solid var(--line)}.top-inner{max-width:1000px;margin:auto;min-height:58px;padding:10px 24px;display:flex;justify-content:space-between;align-items:center;gap:12px}.return{font-size:12px;font-weight:700;color:#6e7a8e;white-space:nowrap}.brand{font-size:13px;font-weight:850;color:#44516a;white-space:nowrap}
+.top{background:#fff;border-bottom:1px solid var(--line)}.top-inner{max-width:1020px;margin:auto;height:72px;padding:0 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.identity{display:flex;align-items:center;gap:11px;font-size:16px;font-weight:850;letter-spacing:-.025em;color:var(--ink);text-decoration:none;white-space:nowrap}
+.identity:hover{color:var(--navy);text-decoration:none}
+.identity:hover>span:last-child{color:var(--accent)}
+.mark{height:34px;width:34px;border-radius:10px;background:#26375e;color:white;display:grid;place-items:center;font-size:16px;flex:none}
+.header-context{font-size:12px;font-weight:700;color:#8c9aaf;white-space:nowrap}
 .shell{max-width:980px;margin:24px auto 60px;padding:0 24px}.intro{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:0 0 18px}.eyebrow{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:850;color:#7f92ad;margin:0 0 5px}h1{font-size:clamp(23px,4vw,31px);line-height:1.3;letter-spacing:-.045em;margin:0}.intro-desc{font-size:13px;color:var(--muted);margin:7px 0 0}.count{font-size:12px;font-weight:750;color:var(--navy);background:#eef2f8;border:1px solid #e1e7f1;border-radius:99px;padding:7px 12px;white-space:nowrap}
 .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:5px;background:#eff2f6;border-radius:14px;margin-bottom:19px}.tabs button{border:0;border-radius:10px;background:transparent;color:#7b8699;padding:12px 10px;font-weight:750;font-size:14px}.tabs button.active{background:white;color:var(--navy);box-shadow:0 2px 8px #34486612}
 .surface{background:white;border:1px solid var(--line);border-radius:17px;padding:20px;box-shadow:0 12px 34px rgba(35,50,80,.045)}h2{font-size:18px;line-height:1.45;letter-spacing:-.025em;margin:0 0 8px}.muted{color:var(--muted);font-size:12px}.pill{display:inline-block;padding:5px 9px;border-radius:8px;background:#f0f3f7;color:#778499;font-size:10px;font-weight:750}
@@ -18,7 +23,7 @@
 .field{display:flex;flex-direction:column;gap:6px;margin:0 0 15px}.field label{color:#56657a;font-weight:800;font-size:12px}.field input,.field select,.field textarea{border:1px solid #dbe2ec;border-radius:10px;padding:10px 12px;background:white;color:#2d3e55;width:100%;font-size:14px;min-height:43px}.field textarea{resize:vertical;min-height:94px}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .quiz-scores{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:18px 0}.score{border-radius:12px;padding:13px;text-align:center;font-size:12px;font-weight:750}.score strong{display:block;font-size:26px;line-height:1.25}.score.good{background:#eaf8ef;color:#236744}.score.bad{background:#fff0f1;color:#a94051}.score.skip{background:#f0f4fa;color:#506c91}.review-list{display:grid;gap:9px;margin-top:18px}.review-row{border:1px solid #e4e9f2;border-radius:12px;padding:13px 15px;background:#fff}.review-row.good{border-left:4px solid #56a47f}.review-row.bad{border-left:4px solid #db687a}.review-row.skip{border-left:4px solid #8e9fb7}.review-row p{margin:5px 0;font-size:13px;color:#526176}.review-row strong{font-size:14px}.review-row .status{font-size:11px;float:right;font-weight:800}
 .manage-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}.manage-top h2{margin:0}.manage-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 15px}.manage-tools input{border:1px solid #dfe5ed;border-radius:10px;min-width:200px;min-height:41px;padding:9px 12px;font-size:14px;flex:1;background:#fff;color:var(--ink)}.manage-list{border-top:1px solid #edf0f4;margin-top:12px}.manage-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #edf0f4;padding:13px 0;gap:12px}.manage-term{border:0;background:transparent;text-align:left;min-width:0;flex:1;color:#27354a;padding:0}.manage-term strong{display:block;font-size:14px}.manage-term small{display:block;color:#8793a4;font-size:11px;line-height:1.6;margin-top:2px;overflow-wrap:anywhere}.manage-row .actions{display:flex;gap:5px}.icon-btn{border:1px solid #e2e7ee;background:#fff;color:#65758c;border-radius:9px;width:37px;height:37px;flex:none;font-size:17px}.manage-preview{border:1px solid #dce5f0;background:#f8faff;padding:16px;border-radius:12px;margin:10px 0 16px}.manage-preview h3{margin:0 0 5px;font-size:18px}.manage-preview p{white-space:pre-wrap;margin:8px 0;font-size:13px;color:#536279}.danger{border-color:#e8bdc4!important;color:#b24452!important}.message{display:none;position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#273a57;color:white;padding:11px 18px;z-index:99;border-radius:10px;font-size:12px;box-shadow:0 10px 28px #1d2c4225;max-width:92vw}.message.show{display:block}.footer{font-size:11px;color:#8792a2;text-align:center;margin:20px 0}
-@media(max-width:680px){.top-inner{min-height:56px;padding:10px 15px}.shell{margin:16px auto 30px;padding:0 13px}.intro{margin-bottom:15px;align-items:flex-start}.intro-desc{font-size:11px}.count{padding:5px 9px;font-size:11px}.tabs{margin-bottom:12px}.tabs button{font-size:13px;padding:10px 5px}.surface{padding:14px}.study-head{margin-bottom:9px}.study-stage{grid-template-columns:28px minmax(0,1fr) 28px;gap:4px}.arrow{font-size:34px}.card{height:clamp(250px,calc(100dvh - 275px),540px);border-radius:14px}.card-header{padding:12px 11px 0}.flip-area{padding:10px 17px 49px}.meaning{font-size:15px}.example{font-size:13px;padding:11px 12px}.options{grid-template-columns:1fr;gap:8px}.option{min-height:57px;padding:10px}.quiz-play{padding-bottom:calc(87px + env(safe-area-inset-bottom,0px))}.quiz-actions{position:fixed;z-index:40;bottom:0;left:0;right:0;margin:0;padding:10px 15px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.98);border-top:1px solid #e4e9f2;box-shadow:0 -5px 24px #23395812}.quiz-actions .btn{width:100%;max-width:600px;min-height:51px;margin:auto;font-size:15px}.question{padding:14px;margin-bottom:10px}.question h2{font-size:16px}.form-grid{grid-template-columns:1fr}.manage-tools input{flex-basis:100%}.manage-row{gap:6px}}
+@media(max-width:680px){.top-inner{height:64px;padding:0 14px}.shell{margin:16px auto 30px;padding:0 13px}.intro{margin-bottom:15px;align-items:flex-start}.intro-desc{font-size:11px}.count{padding:5px 9px;font-size:11px}.tabs{margin-bottom:12px}.tabs button{font-size:13px;padding:10px 5px}.surface{padding:14px}.study-head{margin-bottom:9px}.study-stage{grid-template-columns:28px minmax(0,1fr) 28px;gap:4px}.arrow{font-size:34px}.card{height:clamp(250px,calc(100dvh - 275px),540px);border-radius:14px}.card-header{padding:12px 11px 0}.flip-area{padding:10px 17px 49px}.meaning{font-size:15px}.example{font-size:13px;padding:11px 12px}.options{grid-template-columns:1fr;gap:8px}.option{min-height:57px;padding:10px}.quiz-play{padding-bottom:calc(87px + env(safe-area-inset-bottom,0px))}.quiz-actions{position:fixed;z-index:40;bottom:0;left:0;right:0;margin:0;padding:10px 15px calc(10px + env(safe-area-inset-bottom,0px));background:rgba(255,255,255,.98);border-top:1px solid #e4e9f2;box-shadow:0 -5px 24px #23395812}.quiz-actions .btn{width:100%;max-width:600px;min-height:51px;margin:auto;font-size:15px}.question{padding:14px;margin-bottom:10px}.question h2{font-size:16px}.form-grid{grid-template-columns:1fr}.manage-tools input{flex-basis:100%}.manage-row{gap:6px}}
 
 /* Business-side sticker colors, labels and assignments are kept separate from the main app. */
 .biz-stickers{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
@@ -47,10 +52,165 @@
 @media(max-width:680px){.study-head{align-items:flex-start}.range-label{display:none}.range-tools{gap:3px}.range-select{min-width:105px;max-width:140px;font-size:11px;height:36px}.card-header .biz-stickers{gap:3px}.card-header .biz-sticker{min-width:27px;width:27px;height:27px}.card-header .biz-sticker-dot{width:14px;height:14px}.manage-tools .range-select{width:auto;flex:1;min-width:105px}.biz-stickers.expanded .biz-sticker{padding:6px 8px}}
 
 .quiz-recap-tags{margin-top:9px}.quiz-recap-tags .biz-sticker{width:31px;height:31px}
+
+/* Match the main app's compact header, then keep quiz play on one viewport. */
+/* Only the active question screen is viewport-locked: setup/results and study/manage scroll normally. */
+body.biz-quiz-in-progress{
+ height:100vh;
+ height:100dvh;
+ overflow:hidden;
+}
+body.biz-quiz-in-progress .shell{
+ height:calc(100vh - 72px);
+ height:calc(100dvh - 72px);
+ min-height:0;
+ display:flex;
+ flex-direction:column;
+ margin:0 auto;
+ padding:10px 22px 12px;
+ overflow:hidden;
+}
+body.biz-quiz-in-progress .intro,
+body.biz-quiz-in-progress .footer{display:none}
+body.biz-quiz-in-progress .tabs{
+ flex:none;
+ margin:0 0 9px;
+ padding:4px;
+}
+body.biz-quiz-in-progress .tabs button{
+ min-height:38px;
+ padding:7px 8px;
+}
+body.biz-quiz-in-progress #bizView{
+ flex:1 1 auto;
+ min-height:0;
+ display:flex;
+ flex-direction:column;
+}
+body.biz-quiz-in-progress #bizView>.quiz-play{
+ flex:1 1 auto;
+ display:flex;
+ flex-direction:column;
+ min-height:0;
+ overflow:hidden;
+ padding:12px 16px;
+}
+body.biz-quiz-in-progress .quiz-play .study-head{
+ flex:0 0 auto;
+ margin-bottom:7px;
+}
+body.biz-quiz-in-progress .quiz-play .question{
+ flex:0 1 auto;
+ min-height:0;
+ max-height:34%;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ padding:12px 15px;
+ margin:0 0 9px;
+ border-radius:11px;
+}
+body.biz-quiz-in-progress .quiz-play .question .clue{margin:0 0 5px}
+body.biz-quiz-in-progress .quiz-play .question h2{
+ font-size:clamp(14px,1.8vw,19px);
+ line-height:1.5;
+}
+body.biz-quiz-in-progress .quiz-play .options{
+ flex:1 1 auto;
+ min-height:0;
+ display:grid;
+ grid-template-columns:repeat(2,minmax(0,1fr));
+ grid-template-rows:repeat(2,minmax(0,1fr));
+ gap:8px;
+}
+body.biz-quiz-in-progress .quiz-play .option{
+ height:100%;
+ min-height:0;
+ min-width:0;
+ overflow:hidden;
+ align-items:center;
+ padding:9px 12px;
+ font-size:13px;
+ line-height:1.45;
+}
+body.biz-quiz-in-progress .quiz-play .option-text{
+ min-height:0;
+ max-height:100%;
+ overflow-y:auto;
+ overscroll-behavior:contain;
+ scrollbar-width:thin;
+}
+body.biz-quiz-in-progress .quiz-play .quiz-actions{
+ flex:0 0 auto;
+ position:static;
+ bottom:auto;
+ left:auto;
+ right:auto;
+ z-index:auto;
+ width:auto;
+ margin-top:9px;
+ padding:0;
+ background:transparent;
+ border:0;
+ box-shadow:none;
+}
+body.biz-quiz-in-progress .quiz-play .quiz-actions .btn{
+ min-height:45px;
+ min-width:150px;
+}
+@media(max-width:680px){
+ .header-context{font-size:11px}
+ body.biz-quiz-in-progress .shell{
+  height:calc(100vh - 64px);
+  height:calc(100dvh - 64px);
+  padding:7px 12px 9px;
+ }
+ body.biz-quiz-in-progress .tabs{margin-bottom:6px;padding:3px}
+ body.biz-quiz-in-progress .tabs button{min-height:35px;padding:5px 4px}
+ body.biz-quiz-in-progress #bizView>.quiz-play{
+  padding:10px 11px;
+  padding-bottom:10px;
+ }
+ body.biz-quiz-in-progress .quiz-play .study-head{margin-bottom:5px}
+ body.biz-quiz-in-progress .quiz-play .question{
+  max-height:33%;
+  padding:10px 11px;
+  margin:0 0 7px;
+ }
+ body.biz-quiz-in-progress .quiz-play .question .clue{margin-bottom:4px}
+ body.biz-quiz-in-progress .quiz-play .question h2{font-size:14px;line-height:1.42}
+ body.biz-quiz-in-progress .quiz-play .options{
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:repeat(4,minmax(0,1fr));
+  gap:6px;
+ }
+ body.biz-quiz-in-progress .quiz-play .option{
+  min-height:0;
+  padding:5px 9px;
+  gap:8px;
+  font-size:12px;
+  line-height:1.35;
+ }
+ body.biz-quiz-in-progress .quiz-play .option .letter{width:25px;height:25px}
+ body.biz-quiz-in-progress .quiz-play .option .symbol{font-size:23px}
+ body.biz-quiz-in-progress .quiz-play .quiz-actions{margin-top:7px}
+ body.biz-quiz-in-progress .quiz-play .quiz-actions .btn{
+  width:100%;
+  max-width:none;
+  min-height:44px;
+  font-size:14px;
+ }
+}
+@media(max-height:600px){
+ body.biz-quiz-in-progress .quiz-play .question{max-height:28%;padding:7px 10px}
+ body.biz-quiz-in-progress .quiz-play .question .clue{margin-bottom:2px}
+ body.biz-quiz-in-progress .quiz-play .quiz-actions .btn{min-height:40px}
+ body.biz-quiz-in-progress .quiz-play .option{padding:3px 7px}
+}
+
 </style>
 </head>
 <body>
-<header class="top"><div class="top-inner"><a class="return" href="./index.html">← 広告用語の学習に戻る</a><span class="brand">AdTerms Lab <span style="color:#9daac0">/ 番外編</span></span></div></header>
+<header class="top"><div class="top-inner"><a class="identity" href="./index.html" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark" aria-hidden="true">A</span><span>AdTerms Lab</span></a><span class="header-context">番外編 <span aria-hidden="true">/</span> ビジネス横文字</span></div></header>
 <main class="shell"><div class="intro"><div><p class="eyebrow">SIDE QUEST / BUSINESS VOCABULARY</p><h1>ビジネス横文字100</h1><p class="intro-desc">会議・営業・数字の言葉を、ひとつの場所で覚える。</p></div><span class="count" id="bizCount">100語</span></div>
 <nav class="tabs" aria-label="番外編のメニュー"><button type="button" data-tab="study" class="active" aria-pressed="true">▤ 単語帳</button><button type="button" data-tab="quiz" aria-pressed="false">? 4択クイズ</button><button type="button" data-tab="manage" aria-pressed="false">☷ 単語管理</button></nav><section id="bizView" aria-live="polite"></section><p class="footer">広告用語のメイン単語帳とは別データです。単語と付箋はこのブラウザ内に保存されます。</p></main>
 <div id="bizNotice" class="message" role="status"></div>
@@ -82,7 +242,8 @@ function clean(c){if(!c||typeof c!=='object')return null;const term=String(c.ter
 function start(){let profile='default';try{profile=JSON.parse(localStorage.getItem('adterms-lab-profiles-v3')||'null')?.selected||'default'}catch(e){}key='adterms-lab-business-v1-'+profile;stickerKey='adterms-lab-business-stickers-v1-'+profile;try{stickerConfig=validStickers(JSON.parse(localStorage.getItem(stickerKey)||'null'))||{names:[...STICKER_DEFAULTS.names],colors:[...STICKER_DEFAULTS.colors]}}catch(e){stickerConfig={names:[...STICKER_DEFAULTS.names],colors:[...STICKER_DEFAULTS.colors]}}try{const raw=localStorage.getItem(key);if(raw===null){words=DEFAULT_CARDS.map(clean);localStorage.setItem(key,JSON.stringify(words))}else{const arr=JSON.parse(raw);if(!Array.isArray(arr)||arr.length>1000||arr.some(c=>!clean(c)))throw Error('bad data');words=arr.map(clean)}}catch(e){words=DEFAULT_CARDS.map(clean);alertUser('保存データが読めなかったため初期データを表示しています。')}render()}
 function store(next,resetOrder=true){if(next.length>1000||next.some(c=>!clean(c)))return alertUser('入力データを確認してください'),false;try{const cleaned=next.map(clean);localStorage.setItem(key,JSON.stringify(cleaned));words=cleaned;if(resetOrder)order=[];return true}catch(e){alertUser('保存できませんでした');return false}}
 function mask(c){const all=[c.term,c.term.replace(/[（(].*$/,'').trim(),...Array.from(c.term.matchAll(/[（(]([^）)]+)[）)]/g),m=>m[1])].filter(Boolean);const reserved='\\.^$*+?()[]{}|';const safe=t=>[...t].map(ch=>reserved.includes(ch)?'\\'+ch:ch).join('');const rx=new RegExp([...new Set(all)].sort((a,b)=>b.length-a.length).map(safe).join('|'),'gi');let out='',pos=0;for(const m of c.example.matchAll(rx)){out+=esc(c.example.slice(pos,m.index))+'<span class="mask">？？？</span>';pos=m.index+m[0].length}return out+esc(c.example.slice(pos))}
-function render(){$('bizCount').textContent=words.length+'語';document.querySelectorAll('.tabs [data-tab]').forEach(b=>{const v=b.dataset.tab===tab;b.classList.toggle('active',v);b.setAttribute('aria-pressed',String(v))});if(tab==='study')study();else if(tab==='quiz')quizPage();else manage()}
+function syncQuizViewport(){document.body.classList.toggle('biz-quiz-in-progress',tab==='quiz'&&quiz.phase==='play')}
+function render(){syncQuizViewport();$('bizCount').textContent=words.length+'語';document.querySelectorAll('.tabs [data-tab]').forEach(b=>{const v=b.dataset.tab===tab;b.classList.toggle('active',v);b.setAttribute('aria-pressed',String(v))});if(tab==='study')study();else if(tab==='quiz')quizPage();else manage()}
 function open(t){if(!['study','quiz','manage'].includes(t))return;tab=t;editing=null;render();scrollTo({top:0,behavior:'instant'})}
 function study(){
  const pool=tagPool(studyRange),allowed=new Set(pool.map(c=>c.id));
@@ -100,7 +261,7 @@ function flip(){
 }
 function beginQuiz(){if(words.length<4)return alertUser('クイズには4語以上必要です');const pool=tagPool(quizRange);if(!pool.length)return alertUser('対象の単語がありません');const n=Math.min(Number($('quizCount').value)||pool.length,pool.length);quiz={phase:'play',n,ids:mix(pool.map(c=>c.id)).slice(0,n),index:0,choices:[],chosen:null,answers:[]};choices();quizPage()}
 function choices(){const answer=find(quiz.ids[quiz.index]);if(!answer){quiz.phase='done';return}const same=mix(words.filter(w=>w.id!==answer.id&&w.category===answer.category)).slice(0,3);if(same.length<3)same.push(...mix(words.filter(w=>w.id!==answer.id&&!same.some(c=>c.id===w.id))).slice(0,3-same.length));quiz.choices=mix([answer,...same]);quiz.chosen=null}
-function quizPage(){if(quiz.phase==='setup'){const total=tagPool(quizRange).length;const counts=[10,20,50,100].filter(n=>n<=total);$('bizView').innerHTML='<div class="surface" style="max-width:600px;margin:auto"><h2>4択クイズ</h2><p class="muted">説明から用語を選ぼう。最後にまとめて復習できます。</p><div class="field"><label>付箋の出題範囲</label><select id="quizTagRange">'+tagOptions(quizRange)+'</select></div><div class="field"><label>問題数（対象 '+total+'語）</label><select id="quizCount">'+counts.map(n=>'<option value="'+n+'">'+n+'問</option>').join('')+(total&&!counts.includes(total)?'<option value="'+total+'">全件 ('+total+')</option>':'')+'</select></div><button class="btn primary" style="width:100%" data-do="quizStart" '+(!total?'disabled':'')+'>クイズを始める</button></div>';return}if(quiz.phase==='done')return result();const c=find(quiz.ids[quiz.index]),answered=quiz.chosen!==null;if(!c){quiz.phase='done';return result()}$('bizView').innerHTML='<div class="surface quiz-play"><div class="study-head"><strong>'+(quiz.index+1)+' / '+quiz.ids.length+' 問</strong><button class="btn ghost" data-do="quizFinish">終了</button></div><div class="question"><div class="clue">この説明に当てはまる用語は？</div><h2>'+esc(c.definition)+'</h2></div><div class="options">'+quiz.choices.map((o,i)=>{const good=answered&&o.id===c.id,bad=answered&&o.id===quiz.chosen&&o.id!==c.id;return '<button class="option '+(good?'right':bad?'wrong':'')+'" data-do="answer" data-id="'+esc(o.id)+'" '+(answered?'disabled':'')+'><span class="letter">'+('ABCD'[i])+'</span><span class="option-text">'+esc(o.term)+'</span>'+(good||bad?'<span class="symbol">'+(good?'○':'×')+'</span>':'')+'</button>'}).join('')+'</div><div class="quiz-actions"><button class="btn '+(answered?'primary':'')+'" data-do="'+(answered?'advance':'skip')+'">'+(answered?(quiz.index===quiz.ids.length-1?'結果を見る':'次へ →'):'スキップ →')+'</button></div></div>'}
+function quizPage(){syncQuizViewport();if(quiz.phase==='setup'){const total=tagPool(quizRange).length;const counts=[10,20,50,100].filter(n=>n<=total);$('bizView').innerHTML='<div class="surface" style="max-width:600px;margin:auto"><h2>4択クイズ</h2><p class="muted">説明から用語を選ぼう。最後にまとめて復習できます。</p><div class="field"><label>付箋の出題範囲</label><select id="quizTagRange">'+tagOptions(quizRange)+'</select></div><div class="field"><label>問題数（対象 '+total+'語）</label><select id="quizCount">'+counts.map(n=>'<option value="'+n+'">'+n+'問</option>').join('')+(total&&!counts.includes(total)?'<option value="'+total+'">全件 ('+total+')</option>':'')+'</select></div><button class="btn primary" style="width:100%" data-do="quizStart" '+(!total?'disabled':'')+'>クイズを始める</button></div>';return}if(quiz.phase==='done')return result();const c=find(quiz.ids[quiz.index]),answered=quiz.chosen!==null;if(!c){quiz.phase='done';return result()}$('bizView').innerHTML='<div class="surface quiz-play"><div class="study-head"><strong>'+(quiz.index+1)+' / '+quiz.ids.length+' 問</strong><button class="btn ghost" data-do="quizFinish">終了</button></div><div class="question"><div class="clue">この説明に当てはまる用語は？</div><h2>'+esc(c.definition)+'</h2></div><div class="options">'+quiz.choices.map((o,i)=>{const good=answered&&o.id===c.id,bad=answered&&o.id===quiz.chosen&&o.id!==c.id;return '<button class="option '+(good?'right':bad?'wrong':'')+'" data-do="answer" data-id="'+esc(o.id)+'" '+(answered?'disabled':'')+'><span class="letter">'+('ABCD'[i])+'</span><span class="option-text">'+esc(o.term)+'</span>'+(good||bad?'<span class="symbol">'+(good?'○':'×')+'</span>':'')+'</button>'}).join('')+'</div><div class="quiz-actions"><button class="btn '+(answered?'primary':'')+'" data-do="'+(answered?'advance':'skip')+'">'+(answered?(quiz.index===quiz.ids.length-1?'結果を見る':'次へ →'):'スキップ →')+'</button></div></div>'}
 function answer(id){if(quiz.phase!=='play'||quiz.chosen!==null||!quiz.choices.some(c=>c.id===id))return;quiz.chosen=id;quiz.answers.push({id:quiz.ids[quiz.index],selected:id,status:id===quiz.ids[quiz.index]?'correct':'incorrect'});quizPage()}
 function next(skipped){if(quiz.phase!=='play')return;if(skipped&&quiz.chosen===null)quiz.answers.push({id:quiz.ids[quiz.index],selected:null,status:'skipped'});else if(quiz.chosen===null)return;quiz.index++;if(quiz.index>=quiz.ids.length)quiz.phase='done';else choices();quizPage();scrollTo({top:0,behavior:'instant'})}
 function finish(){if(quiz.phase!=='play')return;if(quiz.chosen===null)quiz.answers.push({id:quiz.ids[quiz.index],selected:null,status:'skipped'});quiz.phase='done';quizPage()}
