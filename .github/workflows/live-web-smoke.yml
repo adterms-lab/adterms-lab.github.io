@@ -1,0 +1,39 @@
+name: Live Web Browser Smoke Test
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'business.html'
+      - 'index.html'
+      - 'tests/live-web-smoke.mjs'
+      - '.github/workflows/live-web-smoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  live-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright and Chromium
+        run: |
+          npm install --no-save playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Verify deployed website and test desktop/mobile interactions
+        run: node tests/live-web-smoke.mjs
+        env:
+          SITE_BASE: https://adterms-lab.github.io
+      - name: Upload browser screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: live-web-browser-screenshots
+          path: test-results/
+          if-no-files-found: ignore
