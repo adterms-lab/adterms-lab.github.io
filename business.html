@@ -225,11 +225,16 @@ body.biz-quiz-in-progress .quiz-play .option-text::-webkit-scrollbar{
  height:0;
 }
 body.biz-quiz-in-progress .quiz-play .option-text::-webkit-scrollbar-button{display:none}
+/* Long description answers scroll inside the option without scrolling the quiz page. */
+body.biz-quiz-in-progress .quiz-play .definition-options .option{align-items:flex-start}
+body.biz-quiz-in-progress .quiz-play .definition-options .option .letter{margin-top:1px}
+body.biz-quiz-in-progress .quiz-play .definition-options .option-text{font-size:12px;line-height:1.45}
+body.biz-quiz-in-progress .quiz-play .question.term-question{max-height:24%}
 
 </style>
 </head>
 <body>
-<header class="top"><div class="top-inner"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.19.4</span></button><span class="header-context">番外編 <span aria-hidden="true">/</span> ビジネス横文字</span></div></header>
+<header class="top"><div class="top-inner"><button type="button" id="brandHome" class="identity identity-button" aria-label="AdTerms Lab・ホームへ戻る"><span class="mark">A</span><span>AdTerms Lab</span><span class="app-build" title="表示中のアプリのバージョン">v26.10.19.5</span></button><span class="header-context">番外編 <span aria-hidden="true">/</span> ビジネス横文字</span></div></header>
 <main class="shell"><div class="intro"><div><p class="eyebrow">SIDE QUEST / BUSINESS VOCABULARY</p><h1>ビジネス横文字100</h1><p class="intro-desc">会議・営業・数字の言葉を、ひとつの場所で覚える。</p></div><span class="count" id="bizCount">100語</span></div>
 <nav class="tabs" aria-label="番外編のメニュー"><button type="button" data-tab="study" class="active" aria-pressed="true">▤ 単語帳</button><button type="button" data-tab="quiz" aria-pressed="false">? 4択クイズ</button><button type="button" data-tab="manage" aria-pressed="false">☷ 単語管理</button></nav><section id="bizView" aria-live="polite"></section><p class="footer">広告用語のメイン単語帳とは別データです。単語と付箋はこのブラウザ内に保存されます。</p></main>
 <div id="bizNotice" class="message" role="status"></div>
@@ -245,7 +250,7 @@ let words=[],key='',tab='study',order=[],idx=0,front=false,startSide='back',sear
 
 const STICKER_DEFAULTS={names:['赤','青','黄','緑'],colors:['#da7080','#5783cf','#d9b044','#49a68a']};
 let stickerConfig={names:[...STICKER_DEFAULTS.names],colors:[...STICKER_DEFAULTS.colors]};
-let stickerKey='',studyRange='all',quizRange='all',manageRange='all',showStickerSettings=false;
+let stickerKey='',studyRange='all',quizRange='all',quizDirection='definition',manageRange='all',showStickerSettings=false;
 function validStickers(c){if(!c||!Array.isArray(c.names)||!Array.isArray(c.colors)||c.names.length!==4||c.colors.length!==4)return null;const names=c.names.map(x=>String(x||'').trim().slice(0,20)),colors=c.colors.map(x=>String(x||'').trim().toLowerCase());return names.every(Boolean)&&colors.every(x=>/^#[0-9a-f]{6}$/.test(x))?{names,colors}:null}
 function tagOptions(range){return [['all','すべての単語'],['untagged','付箋なし'],...stickerConfig.names.map((x,i)=>['tag-'+i,x])].map(([v,t])=>'<option value="'+v+'" '+(v===range?'selected':'')+'>'+esc(t)+'</option>').join('')}
 function tagPool(range){if(range==='untagged')return words.filter(c=>!(c.tags||[]).length);const m=/^tag-([0-3])$/.exec(range);return m?words.filter(c=>(c.tags||[]).includes(Number(m[1]))):words}
@@ -278,13 +283,87 @@ function flip(){
  front=!front;
  study();
 }
-function beginQuiz(){if(words.length<4)return alertUser('クイズには4語以上必要です');const pool=tagPool(quizRange);if(!pool.length)return alertUser('対象の単語がありません');const n=Math.min(Number($('quizCount').value)||pool.length,pool.length);quiz={phase:'play',n,ids:mix(pool.map(c=>c.id)).slice(0,n),index:0,choices:[],chosen:null,answers:[]};choices();quizPage()}
-function choices(){const answer=find(quiz.ids[quiz.index]);if(!answer){quiz.phase='done';return}const same=mix(words.filter(w=>w.id!==answer.id&&w.category===answer.category)).slice(0,3);if(same.length<3)same.push(...mix(words.filter(w=>w.id!==answer.id&&!same.some(c=>c.id===w.id))).slice(0,3-same.length));quiz.choices=mix([answer,...same]);quiz.chosen=null}
-function quizPage(){syncQuizViewport();if(quiz.phase==='setup'){const total=tagPool(quizRange).length;const counts=[10,20,50,100].filter(n=>n<=total);$('bizView').innerHTML='<div class="surface" style="max-width:600px;margin:auto"><h2>4択クイズ</h2><p class="muted">説明から用語を選ぼう。最後にまとめて復習できます。</p><div class="field"><label>付箋の出題範囲</label><select id="quizTagRange">'+tagOptions(quizRange)+'</select></div><div class="field"><label>問題数（対象 '+total+'語）</label><select id="quizCount">'+counts.map(n=>'<option value="'+n+'">'+n+'問</option>').join('')+(total&&!counts.includes(total)?'<option value="'+total+'">全件 ('+total+')</option>':'')+'</select></div><button class="btn primary" style="width:100%" data-do="quizStart" '+(!total?'disabled':'')+'>クイズを始める</button></div>';return}if(quiz.phase==='done')return result();const c=find(quiz.ids[quiz.index]),answered=quiz.chosen!==null;if(!c){quiz.phase='done';return result()}$('bizView').innerHTML='<div class="surface quiz-play"><div class="study-head"><strong>'+(quiz.index+1)+' / '+quiz.ids.length+' 問</strong><button class="btn ghost" data-do="quizFinish">終了</button></div><div class="question"><div class="clue">この説明に当てはまる用語は？</div><h2>'+esc(c.definition)+'</h2></div><div class="options">'+quiz.choices.map((o,i)=>{const good=answered&&o.id===c.id,bad=answered&&o.id===quiz.chosen&&o.id!==c.id;return '<button class="option '+(good?'right':bad?'wrong':'')+'" data-do="answer" data-id="'+esc(o.id)+'" '+(answered?'disabled':'')+'><span class="letter">'+('ABCD'[i])+'</span><span class="option-text">'+esc(o.term)+'</span>'+(good||bad?'<span class="symbol">'+(good?'○':'×')+'</span>':'')+'</button>'}).join('')+'</div><div class="quiz-actions"><button class="btn '+(answered?'primary':'')+'" data-do="'+(answered?'advance':'skip')+'">'+(answered?(quiz.index===quiz.ids.length-1?'結果を見る':'次へ →'):'スキップ →')+'</button></div></div>'}
-function answer(id){if(quiz.phase!=='play'||quiz.chosen!==null||!quiz.choices.some(c=>c.id===id))return;quiz.chosen=id;quiz.answers.push({id:quiz.ids[quiz.index],selected:id,status:id===quiz.ids[quiz.index]?'correct':'incorrect'});quizPage()}
-function next(skipped){if(quiz.phase!=='play')return;if(skipped&&quiz.chosen===null)quiz.answers.push({id:quiz.ids[quiz.index],selected:null,status:'skipped'});else if(quiz.chosen===null)return;quiz.index++;if(quiz.index>=quiz.ids.length)quiz.phase='done';else choices();quizPage();scrollTo({top:0,behavior:'instant'})}
-function finish(){if(quiz.phase!=='play')return;if(quiz.chosen===null)quiz.answers.push({id:quiz.ids[quiz.index],selected:null,status:'skipped'});quiz.phase='done';quizPage()}
-function result(){const a=quiz.answers,good=a.filter(x=>x.status==='correct').length,bad=a.filter(x=>x.status==='incorrect').length,skip=a.filter(x=>x.status==='skipped').length;$('bizView').innerHTML='<div class="surface"><h2>クイズ結果</h2><div class="quiz-scores"><div class="score good"><strong>'+good+'</strong>正解</div><div class="score bad"><strong>'+bad+'</strong>不正解</div><div class="score skip"><strong>'+skip+'</strong>スキップ</div></div><div class="controls"><button class="btn primary" data-do="quizReset">もう一度</button><button class="btn" data-tab="study">単語帳へ</button></div><div class="review-list">'+a.map((x,i)=>{const c=find(x.id),picked=find(x.selected);if(!c)return '';const cl=x.status==='correct'?'good':x.status==='incorrect'?'bad':'skip',status=x.status==='correct'?'○ 正解':x.status==='incorrect'?'× 不正解':'– スキップ';return '<div class="review-row '+cl+'"><span class="status">'+status+'</span><strong>'+(i+1)+'. '+esc(c.term)+'</strong><p>'+esc(c.definition)+'</p>'+(x.status==='incorrect'&&picked?'<p>選択した単語：'+esc(picked.term)+'</p>':'')+'<div class="quiz-recap-tags">'+stickerButtons(c.id)+'</div></div>'}).join('')+'</div></div>'}
+function makeQuizDirections(count,direction){
+ if(direction!=='mixed')return Array(count).fill(direction==='term'?'term':'definition');
+ return mix(Array.from({length:count},(_,i)=>i%2===0?'definition':'term'));
+}
+function beginQuiz(){
+ if(words.length<4)return alertUser('クイズには4語以上必要です');
+ const pool=tagPool(quizRange);
+ if(!pool.length)return alertUser('対象の単語がありません');
+ const n=Math.min(Number($('quizCount').value)||pool.length,pool.length);
+ quizDirection=['definition','term','mixed'].includes($('quizDirection').value)?$('quizDirection').value:'definition';
+ quiz={phase:'play',n,ids:mix(pool.map(c=>c.id)).slice(0,n),index:0,choices:[],chosen:null,answers:[],direction:quizDirection,directions:makeQuizDirections(n,quizDirection),currentDirection:'definition'};
+ choices();
+ quizPage();
+}
+function choices(){
+ const answer=find(quiz.ids[quiz.index]);
+ if(!answer){quiz.phase='done';return}
+ quiz.currentDirection=quiz.directions?.[quiz.index]||'definition';
+ const field=quiz.currentDirection==='term'?'definition':'term';
+ const seen=new Set([String(answer[field]||'').trim()]);
+ const candidates=[
+  ...mix(words.filter(w=>w.id!==answer.id&&w.category===answer.category)),
+  ...mix(words.filter(w=>w.id!==answer.id&&w.category!==answer.category))
+ ];
+ const distractors=[];
+ for(const w of candidates){
+  const label=String(w[field]||'').trim();
+  if(label&&!seen.has(label)){seen.add(label);distractors.push(w)}
+  if(distractors.length===3)break;
+ }
+ if(distractors.length<3){alertUser('選択肢が不足しています');quiz.phase='done';return}
+ quiz.choices=mix([answer,...distractors]);
+ quiz.chosen=null;
+}
+function quizPage(){
+ syncQuizViewport();
+ if(quiz.phase==='setup'){
+  const total=tagPool(quizRange).length;
+  const counts=[10,20,50,100].filter(n=>n<=total);
+  const formatOptions=[
+   ['definition','説明から用語を選ぶ'],
+   ['term','用語から説明を選ぶ'],
+   ['mixed','両方を混ぜる']
+  ];
+  $('bizView').innerHTML='<div class="surface" style="max-width:600px;margin:auto"><h2>4択クイズ</h2><p class="muted">問題形式を選んで理解を確かめよう。最後にまとめて復習できます。</p><div class="field"><label for="quizTagRange">付箋の出題範囲</label><select id="quizTagRange">'+tagOptions(quizRange)+'</select></div><div class="field"><label for="quizCount">問題数（対象 '+total+'語）</label><select id="quizCount">'+counts.map(n=>'<option value="'+n+'">'+n+'問</option>').join('')+(total&&!counts.includes(total)?'<option value="'+total+'">全件 ('+total+')</option>':'')+'</select></div><div class="field"><label for="quizDirection">問題形式</label><select id="quizDirection">'+formatOptions.map(([value,label])=>'<option value="'+value+'"'+(quizDirection===value?' selected':'')+'>'+label+'</option>').join('')+'</select></div><button class="btn primary" style="width:100%" data-do="quizStart" '+(!total?'disabled':'')+'>クイズを始める</button></div>';
+  return;
+ }
+ if(quiz.phase==='done')return result();
+ const c=find(quiz.ids[quiz.index]),answered=quiz.chosen!==null;
+ if(!c){quiz.phase='done';return result()}
+ const reverse=quiz.currentDirection==='term';
+ const clue=reverse?'この用語に当てはまる説明は？':'この説明に当てはまる用語は？';
+ const prompt=reverse?c.term:c.definition;
+ $('bizView').innerHTML='<div class="surface quiz-play"><div class="study-head"><strong>'+(quiz.index+1)+' / '+quiz.ids.length+' 問</strong><button class="btn ghost" data-do="quizFinish">終了</button></div><div class="question '+(reverse?'term-question':'')+'"><div class="clue">'+clue+'</div><h2>'+esc(prompt)+'</h2></div><div class="options '+(reverse?'definition-options':'')+'">'+quiz.choices.map((o,i)=>{const good=answered&&o.id===c.id,bad=answered&&o.id===quiz.chosen&&o.id!==c.id;return '<button class="option '+(good?'right':bad?'wrong':'')+'" data-do="answer" data-id="'+esc(o.id)+'" '+(answered?'disabled':'')+'><span class="letter">'+('ABCD'[i])+'</span><span class="option-text">'+esc(reverse?o.definition:o.term)+'</span>'+(good||bad?'<span class="symbol">'+(good?'○':'×')+'</span>':'')+'</button>'}).join('')+'</div><div class="quiz-actions"><button class="btn '+(answered?'primary':'')+'" data-do="'+(answered?'advance':'skip')+'">'+(answered?(quiz.index===quiz.ids.length-1?'結果を見る':'次へ →'):'スキップ →')+'</button></div></div>';
+}
+function answer(id){
+ if(quiz.phase!=='play'||quiz.chosen!==null||!quiz.choices.some(c=>c.id===id))return;
+ quiz.chosen=id;
+ quiz.answers.push({id:quiz.ids[quiz.index],selected:id,status:id===quiz.ids[quiz.index]?'correct':'incorrect',direction:quiz.currentDirection});
+ quizPage();
+}
+function next(skipped){
+ if(quiz.phase!=='play')return;
+ if(skipped&&quiz.chosen===null)quiz.answers.push({id:quiz.ids[quiz.index],selected:null,status:'skipped',direction:quiz.currentDirection});
+ else if(quiz.chosen===null)return;
+ quiz.index++;
+ if(quiz.index>=quiz.ids.length)quiz.phase='done';
+ else choices();
+ quizPage();
+ scrollTo({top:0,behavior:'instant'});
+}
+function finish(){
+ if(quiz.phase!=='play')return;
+ if(quiz.chosen===null)quiz.answers.push({id:quiz.ids[quiz.index],selected:null,status:'skipped',direction:quiz.currentDirection});
+ quiz.phase='done';
+ quizPage();
+}
+function result(){
+ const a=quiz.answers,good=a.filter(x=>x.status==='correct').length,bad=a.filter(x=>x.status==='incorrect').length,skip=a.filter(x=>x.status==='skipped').length;
+ $('bizView').innerHTML='<div class="surface"><h2>クイズ結果</h2><div class="quiz-scores"><div class="score good"><strong>'+good+'</strong>正解</div><div class="score bad"><strong>'+bad+'</strong>不正解</div><div class="score skip"><strong>'+skip+'</strong>スキップ</div></div><div class="controls"><button class="btn primary" data-do="quizReset">もう一度</button><button class="btn" data-tab="study">単語帳へ</button></div><div class="review-list">'+a.map((x,i)=>{const c=find(x.id),picked=find(x.selected);if(!c)return '';const cl=x.status==='correct'?'good':x.status==='incorrect'?'bad':'skip',status=x.status==='correct'?'○ 正解':x.status==='incorrect'?'× 不正解':'– スキップ';const wrongLabel=x.direction==='term'?'選択した説明：':'選択した用語：';const wrongText=x.direction==='term'?picked?.definition:picked?.term;return '<div class="review-row '+cl+'"><span class="status">'+status+'</span><strong>'+(i+1)+'. '+esc(c.term)+'</strong><p>'+esc(c.definition)+'</p>'+(x.status==='incorrect'&&picked?'<p>'+wrongLabel+esc(wrongText)+'</p>':'')+'<div class="quiz-recap-tags">'+stickerButtons(c.id)+'</div></div>'}).join('')+'</div></div>';
+}
 function manage(){
  if(editing!==null)return editor();
  $('bizView').innerHTML='<div class="surface"><div class="manage-top"><h2>単語管理</h2><button class="btn primary" data-do="add">＋ 追加</button></div><div class="manage-tools"><input type="search" id="searchTerms" placeholder="単語・意味・例文を検索" value="'+esc(search)+'"><select id="manageTagRange" class="range-select" aria-label="付箋の絞り込み">'+tagOptions(manageRange)+'</select><button class="btn" data-do="stickerSettings">付箋設定 ⚙</button><button class="btn" data-do="export">バックアップ</button><button class="btn" data-do="import">読み込み</button><input type="file" id="importFile" accept=".json,application/json" hidden></div>'+stickerSettingsPanel()+'<div id="preview"></div><p class="muted" id="termCount"></p><div class="manage-list" id="termsList"></div><div class="controls" style="margin-top:16px"><button class="btn ghost" data-do="restore">初期100語の不足分を復元</button></div></div>';
@@ -308,7 +387,7 @@ document.getElementById('brandHome').addEventListener('click',()=>{window.locati
 document.addEventListener('click',e=>{const t=e.target.closest('[data-tab]');if(t){open(t.dataset.tab);return}const b=e.target.closest('[data-do]');if(!b)return;const a=b.dataset.do,id=b.dataset.id;if(a==='toggleTag'){toggleTag(id,Number(b.dataset.tag));return}if(a==='prev')move(-1);else if(a==='next')move(1);else if(a==='flip'){flip()}else if(a==='shuffle'){order=mix(tagPool(studyRange).map(c=>c.id));idx=0;front=startSide==='front';study()}else if(a==='side'){startSide=b.dataset.value;front=startSide==='front';study()}else if(a==='quizStart')beginQuiz();else if(a==='answer')answer(id);else if(a==='advance')next(false);else if(a==='skip')next(true);else if(a==='quizFinish')finish();else if(a==='quizReset'){quiz.phase='setup';quizPage()}else if(a==='inspect'){selected=id;preview()}else if(a==='closePreview'){selected='';preview()}else if(a==='add'){editing='new';editor()}else if(a==='edit'){editing=id;editor()}else if(a==='cancel'){editing=null;manage()}else if(a==='stickerSettings'){showStickerSettings=!showStickerSettings;manage()}else if(a==='resetStickers'){if(confirm('付箋名と色を初期状態に戻しますか？単語への付箋は残ります。')&&saveStickerConfig(STICKER_DEFAULTS)){manage();alertUser('付箋設定を戻しました')}}else if(a==='delete'){const c=find(id);if(c&&confirm('「'+c.term+'」を削除しますか？')&&store(words.filter(x=>x.id!==id))){if(selected===id)selected='';manage();alertUser('削除しました')}}else if(a==='restore'){const old=new Set(words.map(c=>c.term)),missing=DEFAULT_CARDS.filter(c=>!old.has(c.term));if(!missing.length)return alertUser('初期100語はすべて登録済みです');if(confirm(missing.length+'語を追加しますか？')&&store([...words,...missing])){manage();alertUser('復元しました')}}else if(a==='export')exportData();else if(a==='import')$('importFile')?.click()});
 document.addEventListener('submit',e=>{if(e.target.id==='editForm')saveEdit(e);else if(e.target.id==='stickerForm')applyStickerSettings(e)});
 document.addEventListener('input',e=>{if(e.target.id==='searchTerms'){search=e.target.value;list()}});
-document.addEventListener('change',async e=>{if(e.target.id==='studyTagRange'){studyRange=e.target.value;order=[];study()}else if(e.target.id==='quizTagRange'){quizRange=e.target.value;quizPage()}else if(e.target.id==='manageTagRange'){manageRange=e.target.value;list()}else if(e.target.id==='importFile'){const file=e.target.files?.[0];e.target.value='';if(file)await importData(file)}});
+document.addEventListener('change',async e=>{if(e.target.id==='studyTagRange'){studyRange=e.target.value;order=[];study()}else if(e.target.id==='quizTagRange'){quizRange=e.target.value;quizPage()}else if(e.target.id==='quizDirection'){quizDirection=e.target.value}else if(e.target.id==='manageTagRange'){manageRange=e.target.value;list()}else if(e.target.id==='importFile'){const file=e.target.files?.[0];e.target.value='';if(file)await importData(file)}});
 document.addEventListener('keydown',e=>{
  if(tab!=='study'||e.ctrlKey||e.metaKey||e.altKey||e.shiftKey||e.isComposing||
    e.target.closest('input,textarea,select,[contenteditable]'))return;
