@@ -623,8 +623,70 @@ async function upgradeGlossary(){
  }
  try{localStorage.setItem(marker,'done')}catch(e){}
 }
+
+const REFINEMENT_MARKER='adterms-lab-refinement-20261019-v1-';
+async function refineSavedGlossary(){
+ if(storage==='memory')return;
+ const key=REFINEMENT_MARKER+profileId;
+ try{if(localStorage.getItem(key)==='done')return}catch(e){}
+ const old=GLOSSARY_REFINEMENT_PREVIOUS,removed=GLOSSARY_REFINEMENT_REMOVED,aliases=GLOSSARY_REFINEMENT_ALIASES;
+ const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+ const renamedTerm=value=>aliases[value]||value;
+ const canon=v=>String(v||'').normalize('NFKC').toLocaleLowerCase('ja').replace(/[（(][^）)]*[）)]/g,'').replace(/[\s　・]/g,'').trim();
+ const byId=new Map(cards.map(c=>[c.id,c]));
+ const discardedTags=new Map();
+ let changed=false;
+ const retained=[];
+ for(const c of cards){
+  const info=removed[c.id],keeper=info&&byId.get(info.keep);
+  if(info&&keeper&&keeper.id!==c.id){
+   const [term,definition,example,usage,category,related]=info.old;
+   // Only discard the original stock version. A user-edited duplicate is always retained.
+   if(c.term===term&&c.definition===definition&&String(c.example||'')===example&&
+      c.usageSentence===usage&&c.category===category&&same(c.related,related)){
+    const group=discardedTags.get(info.keep)||[];
+    discardedTags.set(info.keep,[...new Set([...group,...(c.tags||[])])]);
+    changed=true;
+    continue;
+   }
+  }
+  retained.push(c);
+ }
+ const saved=retained.map(c=>{
+  const base=old[c.id],target=BUILTIN.find(b=>b.id===c.id);
+  let next=c;
+  if(base&&target){
+   const [oldDefinition,oldExample,oldRelated]=base;
+   const nextDefinition=c.definition===oldDefinition?target.definition:c.definition;
+   const nextExample=String(c.example||'')===oldExample?target.example:c.example;
+   // Preserve user-edited relations; update just stock relations and refs to removed words.
+   const nextRelated=same(c.related,oldRelated)?[...target.related]:(c.related||[]).map(renamedTerm);
+   if(nextDefinition!==c.definition||nextExample!==c.example||!same(nextRelated,c.related)){
+    next={...next,definition:nextDefinition,example:nextExample,related:nextRelated};
+   }
+  }
+  const mapped=(next.related||[]).map(renamedTerm);
+  const newRelated=[...new Set(mapped)].filter(t=>t!==next.term);
+  if(!same(newRelated,next.related))next={...next,related:newRelated};
+  const transfer=discardedTags.get(c.id);
+  if(transfer?.length){
+   const merged=[...new Set([...(next.tags||[]),...transfer])].sort((a,b)=>a-b);
+   if(!same(merged,next.tags))next={...next,tags:merged};
+  }
+  if(next!==c)changed=true;
+  return next;
+ });
+ if(changed){
+  try{await commit(saved)}catch(e){
+   console.error('Could not save glossary refinement',e);
+   notice('用語の整理内容を保存できませんでした。再読み込み時に再試行します');
+   return;
+  }
+ }
+ try{localStorage.setItem(key,'done')}catch(e){console.warn('Refinement marker could not be saved',e)}
+}
 async function initStorage(){db?.close();db=null;let loaded=null;try{db=await openDB();storage='indexedDB';const init=await dbHasInit();if(init){loaded=await dbGetAll()}else{loaded=builtinCards();await dbWrite(loaded)}}catch(e){db?.close();db=null;try{storage='localStorage';const key=LS_PREFIX+profileId, init=localStorage.getItem(LS_META+profileId);if(init){loaded=JSON.parse(localStorage.getItem(key)||'[]')}else{loaded=builtinCards();localStorage.setItem(key,JSON.stringify(loaded));localStorage.setItem(LS_META+profileId,'1')}}catch(err){storage='memory';loaded=builtinCards()}}
-const needsExampleCleanup=Array.isArray(loaded)&&loaded.some(c=>c&&cleanedLegacyExample(c)!==String(c.example||''));cards=Array.isArray(loaded)?loaded.map(normalizedCard).filter(Boolean):builtinCards();if(cards.length===0&&Array.isArray(loaded)&&loaded.length>0)cards=builtinCards();if(needsExampleCleanup&&storage!=='memory'){try{await commit(cards)}catch(e){console.error('Supplement migration could not be saved',e);notice('補足欄の更新を保存できませんでした。再読み込み時に再試行します')}}if(storage!=='memory')await upgradeGlossary();$('storageMessage').textContent=storage==='indexedDB'?'保存先：このブラウザのIndexedDB':storage==='localStorage'?'保存先：このブラウザの簡易ストレージ（バックアップ推奨）':'一時利用モード：自動保存できません。JSONでバックアップしてください。';syncSelectors();resetStudy();quiz={phase:'setup'};redraw()}
+const needsExampleCleanup=Array.isArray(loaded)&&loaded.some(c=>c&&cleanedLegacyExample(c)!==String(c.example||''));cards=Array.isArray(loaded)?loaded.map(normalizedCard).filter(Boolean):builtinCards();if(cards.length===0&&Array.isArray(loaded)&&loaded.length>0)cards=builtinCards();if(needsExampleCleanup&&storage!=='memory'){try{await commit(cards)}catch(e){console.error('Supplement migration could not be saved',e);notice('補足欄の更新を保存できませんでした。再読み込み時に再試行します')}}if(storage!=='memory'){await upgradeGlossary();await refineSavedGlossary()}$('storageMessage').textContent=storage==='indexedDB'?'保存先：このブラウザのIndexedDB':storage==='localStorage'?'保存先：このブラウザの簡易ストレージ（バックアップ推奨）':'一時利用モード：自動保存できません。JSONでバックアップしてください。';syncSelectors();resetStudy();quiz={phase:'setup'};redraw()}
 async function commit(arr){const normalized=arr.map(normalizedCard).filter(Boolean);if(storage==='indexedDB')await dbWrite(normalized);else if(storage==='localStorage'){localStorage.setItem(LS_PREFIX+profileId,JSON.stringify(normalized));localStorage.setItem(LS_META+profileId,'1')}else throw Error('storage unavailable');cards=normalized}
 async function switchProfile(id){if(id===profileId||!profiles.some(p=>p.id===id))return;profileId=id;saveProfiles();loadTagNames();await initStorage();renderProfiles();setView('home');notice('利用者を切り替えました')}
 async function addProfile(){const name=prompt('新しい利用者の名前を入力してください');if(name===null)return;const clean=name.trim().slice(0,25);if(!clean||profiles.length>=40){notice('名前を確認してください');return}if(profiles.some(p=>p.name===clean)){notice('同じ名前の利用者がいます');return}const id=uniqueId();profiles.push({id,name:clean});if(!saveProfiles()){profiles.pop();notice('利用者の保存に失敗しました');return}await switchProfile(id)}
@@ -639,6 +701,7 @@ async function deleteProfile(){const target=profiles.find(p=>p.id===profileId);i
   localStorage.removeItem(LS_PREFIX+target.id);
   localStorage.removeItem(LS_META+target.id);
   localStorage.removeItem(NAME_KEY+target.id);
+  localStorage.removeItem(REFINEMENT_MARKER+target.id);
   const remaining=profiles.filter(p=>p.id!==target.id),next=remaining[0].id;
   // Persist the next active profile before opening any new storage.
   const originalProfiles=profiles,originalId=profileId;
